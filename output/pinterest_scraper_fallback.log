@@ -1,0 +1,30 @@
+2026-02-25 04:06:46,006 - INFO - 
+================================================================================
+2026-02-25 04:06:46,006 - INFO - ATTEMPTING STRATEGY 1: Toronto, Senior+ (IC13+), Any Compensation
+2026-02-25 04:06:46,006 - INFO - ================================================================================
+2026-02-25 04:06:46,006 - INFO - 
+================================================================================
+2026-02-25 04:06:46,006 - INFO - STRATEGY: Strategy 1: Toronto IC13+
+2026-02-25 04:06:46,007 - INFO - URL: https://www.levels.fyi/companies/pinterest/salaries/software-engineer
+2026-02-25 04:06:46,007 - INFO - ================================================================================
+2026-02-25 04:06:46,007 - ERROR - requests library not available
+2026-02-25 04:06:46,007 - ERROR - Failed to fetch page for strategy: Strategy 1: Toronto IC13+
+2026-02-25 04:06:46,007 - INFO - Strategy 1 Results: 0 records match (Toronto + IC13+)
+2026-02-25 04:06:46,007 - INFO - 
+================================================================================
+2026-02-25 04:06:46,007 - INFO - ATTEMPTING STRATEGY 2: Canada-wide, Principal+ (IC15+), >$400k
+2026-02-25 04:06:46,007 - INFO - ================================================================================
+2026-02-25 04:06:46,007 - INFO - Strategy 2 Results: 0 records match (Canada + IC15+ + >$400k)
+2026-02-25 04:06:46,007 - INFO - 
+================================================================================
+2026-02-25 04:06:46,007 - INFO - ATTEMPTING STRATEGY 3: All Canada, Senior+ (IC13+)
+2026-02-25 04:06:46,007 - INFO - ================================================================================
+2026-02-25 04:06:46,007 - INFO - Strategy 3 Results: 0 records match (Canada + IC13+)
+2026-02-25 04:06:46,007 - INFO - 
+================================================================================
+2026-02-25 04:06:46,007 - INFO - ATTEMPTING STRATEGY 4: All Pinterest SWE data (no filters)
+2026-02-25 04:06:46,007 - INFO - ================================================================================
+2026-02-25 04:06:46,007 - INFO - Total records scraped: 0
+2026-02-25 04:06:46,007 - WARNING - No records matched any strategy criteria
+2026-02-25 04:06:46,007 - INFO - ✓ Exported 0 records to pinterest_compensation_toronto.csv
+2026-02-25 04:06:46,008 - INFO - ✓ Exported 0 records to pinterest_compensation_toronto.json

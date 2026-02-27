@@ -1,0 +1,136 @@
+{
+  "company": "Pinterest",
+  "company_slug": "pinterest",
+  "companyIcon": "https://static.levels.fyi/pinterestlogo.png",
+  "color": [
+    189,
+    8,
+    28
+  ],
+  "skill_spectrum": 91.40625,
+  "generic": false,
+  "job_family": "Software Engineer",
+  "job_family_slug": "software-engineer",
+  "levels": [
+    {
+      "description": null,
+      "titles": [
+        "IC13",
+        "Software Engineer I"
+      ],
+      "titleSlugs": [
+        "ic13",
+        "software-engineer-i"
+      ],
+      "order": 0,
+      "target_bonus_percentage": null,
+      "percent_workforce": 17.565586,
+      "skill_index": 8.78,
+      "skill_index_start": 0,
+      "skill_index_end": 17.57
+    },
+    {
+      "description": null,
+      "titles": [
+        "IC14",
+        "Software Engineer II"
+      ],
+      "titleSlugs": [
+        "ic14",
+        "software-engineer-ii"
+      ],
+      "order": 1,
+      "target_bonus_percentage": null,
+      "percent_workforce": 20.534336,
+      "skill_index": 27.83,
+      "skill_index_start": 17.57,
+      "skill_index_end": 38.1
+    },
+    {
+      "description": null,
+      "titles": [
+        "IC15",
+        "Senior Software Engineer"
+      ],
+      "titleSlugs": [
+        "ic15",
+        "senior-software-engineer"
+      ],
+      "order": 2,
+      "target_bonus_percentage": null,
+      "percent_workforce": 20.846836,
+      "skill_index": 48.52,
+      "skill_index_start": 38.1,
+      "skill_index_end": 58.95
+    },
+    {
+      "description": null,
+      "titles": [
+        "IC16",
+        "Staff Software Engineer"
+      ],
+      "titleSlugs": [
+        "ic16",
+        "staff-software-engineer"
+      ],
+      "order": 3,
+      "target_bonus_percentage": null,
+      "percent_workforce": 13.4085655,
+      "skill_index": 65.65,
+      "skill_index_start": 58.95,
+      "skill_index_end": 72.36
+    },
+    {
+      "description": null,
+      "titles": [
+        "IC17",
+        "Senior Staff Software Engineer"
+      ],
+      "titleSlugs": [
+        "ic17",
+        "senior-staff-software-engineer"
+      ],
+      "order": 4,
+      "target_bonus_percentage": null,
+      "percent_workforce": 6.5625,
+      "skill_index": 75.64,
+      "skill_index_start": 72.36,
+      "skill_index_end": 78.92
+    },
+    {
+      "description": null,
+      "titles": [
+        "IC18",
+        "Principal Software Engineer"
+      ],
+      "titleSlugs": [
+        "ic18",
+        "principal-software-engineer"
+      ],
+      "order": 5,
+      "target_bonus_percentage": null,
+      "percent_workforce": 6.5625,
+      "skill_index": 82.2,
+      "skill_index_start": 78.92,
+      "skill_index_end": 85.48
+    },
+    {
+      "description": null,
+      "titles": [
+        "IC19",
+        "Distinguished Engineer"
+      ],
+      "titleSlugs": [
+        "ic19",
+        "distinguished-engineer"
+      ],
+      "order": 6,
+      "target_bonus_percentage": null,
+      "percent_workforce": 5.9259257,
+      "skill_index": 88.44,
+      "skill_index_start": 85.48,
+      "skill_index_end": 91.41
+    }
+  ],
+  "hasSalaryLevelData": true
+}

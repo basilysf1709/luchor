@@ -1,0 +1,11 @@
+{
+  "row_count": 1,
+  "column_count": 10,
+  "valid_records": 1,
+  "quality_rating": "excellent",
+  "quality_score": 100,
+  "passed": true,
+  "issues": [],
+  "sample_data": "Record 1:\n  base_salary: 200000\n  bonus: 50000\n  company: Pinterest\n  data_source: levels.fyi\n  job_title: Senior Software Engineer\n  location: Toronto\n  stock_equity: 200000\n  submitted_date: 2026-02-25\n  total_compensation: 450000\n  years_of_experience: 8\n\n",
+  "summary": "Collected 1 compensation record(s) with 10 columns. 1 record(s) meet all requirements (Pinterest, Toronto, Senior SWE, $400k+ TC). Quality: excellent (100.0/100). Passed validation."
+}

@@ -1,0 +1,70 @@
+{
+  "metadata": {
+    "source": "TIOBE Index",
+    "url": "https://www.tiobe.com/tiobe-index/",
+    "scraped_at": "2026-02-25T08:36:33.430657Z",
+    "count": 10
+  },
+  "data": [
+    {
+      "rank": 1,
+      "language": "Python",
+      "rating": "21.81%",
+      "change": "-2.08%"
+    },
+    {
+      "rank": 2,
+      "language": "C",
+      "rating": "11.05%",
+      "change": "+1.22%"
+    },
+    {
+      "rank": 3,
+      "language": "C++",
+      "rating": "8.55%",
+      "change": "-2.82%"
+    },
+    {
+      "rank": 4,
+      "language": "Java",
+      "rating": "8.12%",
+      "change": "-2.54%"
+    },
+    {
+      "rank": 5,
+      "language": "C#",
+      "rating": "6.83%",
+      "change": "+2.71%"
+    },
+    {
+      "rank": 6,
+      "language": "JavaScript",
+      "rating": "2.92%",
+      "change": "-0.85%"
+    },
+    {
+      "rank": 7,
+      "language": "Visual Basic",
+      "rating": "2.85%",
+      "change": "+0.81%"
+    },
+    {
+      "rank": 8,
+      "language": "R",
+      "rating": "2.19%",
+      "change": "+1.14%"
+    },
+    {
+      "rank": 9,
+      "language": "SQL",
+      "rating": "1.93%",
+      "change": "-0.93%"
+    },
+    {
+      "rank": 10,
+      "language": "Delphi/Object Pascal",
+      "rating": "1.88%",
+      "change": "-0.29%"
+    }
+  ]
+}

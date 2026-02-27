@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "scrape_date": "2026-02-25T04:06:46.007987",
+    "source": "levels.fyi",
+    "company": "Pinterest",
+    "successful_strategy": "No successful strategy",
+    "total_records": 0,
+    "strategies_attempted": [
+      {
+        "name": "Strategy 1",
+        "criteria": "Toronto + IC13+ + Any Compensation",
+        "priority": 1
+      },
+      {
+        "name": "Strategy 2",
+        "criteria": "Canada-wide + IC15+ + >$400k",
+        "priority": 2
+      },
+      {
+        "name": "Strategy 3",
+        "criteria": "Canada-wide + IC13+",
+        "priority": 3
+      },
+      {
+        "name": "Strategy 4",
+        "criteria": "Any Canada location",
+        "priority": 4
+      }
+    ],
+    "statistics": {}
+  },
+  "records": []
+}

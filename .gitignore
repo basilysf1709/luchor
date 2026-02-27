@@ -1,0 +1,21 @@
+# Binaries
+luchor
+*.exe
+
+# Go
+vendor/
+
+# Python
+output/.venv/
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+
+# Env
+.env*
