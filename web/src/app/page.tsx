@@ -5,16 +5,16 @@ import {
   Paperclip,
   Mic,
   ArrowUp,
-  Settings,
   Globe,
   Mail,
   Phone,
   Magnet,
   Video,
-  Linkedin,
+  LinkedinIcon,
   MessageSquare,
   type LucideIcon,
 } from "lucide-react";
+import { FaDiscord, FaGithub } from "react-icons/fa";
 import {
   SidebarProvider,
   SidebarInset,
@@ -27,7 +27,7 @@ const suggestions: { label: string; icon: LucideIcon }[] = [
   { label: "Outbound sales calls", icon: Phone },
   { label: "Lead gen", icon: Magnet },
   { label: "Meeting recorder", icon: Video },
-  { label: "LinkedIn outreach", icon: Linkedin },
+  { label: "LinkedIn outreach", icon: LinkedinIcon },
   { label: "Support chatbot", icon: MessageSquare },
 ];
 
@@ -38,9 +38,17 @@ export default function Home() {
       <SidebarInset>
         <header className="flex h-12 items-center justify-between px-4">
           <SidebarTrigger />
-          <button className="flex h-7 w-7 items-center justify-center text-black/50 hover:text-black">
-            <Settings size={18} strokeWidth={1.5} />
-          </button>
+          <div className="flex items-center gap-1.5 mt-4 mr-4">
+            <a href="https://discord.gg" target="_blank" rel="noopener noreferrer" className="flex h-7 w-7 items-center justify-center text-black/50 hover:text-black">
+              <FaDiscord size={18} />
+            </a>
+            <a href="https://github.com/basilysf1709/luchor" target="_blank" rel="noopener noreferrer" className="flex h-7 w-7 items-center justify-center text-black/50 hover:text-black">
+              <FaGithub size={18} />
+            </a>
+            <button className="flex h-9 items-center px-6 text-sm font-medium bg-screamin-green-800 text-white hover:bg-screamin-green-700">
+              Sign in
+            </button>
+          </div>
         </header>
         <main className="flex flex-1 flex-col items-center justify-center px-4">
           <h1 className="mb-8 text-4xl font-bold">How can I help?</h1>
