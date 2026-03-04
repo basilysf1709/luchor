@@ -41,7 +41,7 @@ export async function createAgentChatResponse(messages: UIMessage[]) {
       });
 
       const result = streamText({
-        model: anthropic(activeAgent.model ?? "claude-3-haiku-20240307"),
+        model: anthropic(activeAgent.model ?? "claude-sonnet-4-5"),
         system: systemPrompt,
         messages: await convertToModelMessages(messages),
         tools,
