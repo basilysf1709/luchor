@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import type { ToolDefinition } from "./types";
+import type { ToolDefinition } from "./types.ts";
 
 export function defineTool<T extends z.ZodType>(config: {
   name: string;

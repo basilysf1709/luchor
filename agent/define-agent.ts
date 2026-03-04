@@ -1,4 +1,4 @@
-import type { AgentDefinition, ToolDefinition } from "./types";
+import type { AgentDefinition, ToolDefinition } from "./types.ts";
 
 export function defineAgent(config: {
   name: string;

@@ -1,3 +1,3 @@
-export { orchestrator } from "./orchestrator";
-export { researcher } from "./researcher";
-export { analyst } from "./analyst";
+export { orchestrator } from "./orchestrator.ts";
+export { researcher } from "./researcher.ts";
+export { analyst } from "./analyst.ts";

@@ -1,73 +1,91 @@
-import {
-  convertToModelMessages,
-  createUIMessageStream,
-  createUIMessageStreamResponse,
-  stepCountIs,
-  streamText,
-  type UIMessage,
-} from "ai";
-import { anthropic } from "@ai-sdk/anthropic";
-import { orchestrator } from "./agents";
-import {
-  buildAgentRegistry,
-  buildSystemPrompt,
-  extractConversationState,
-} from "./runtime";
-import { resolveTools } from "./runtime/resolve-tools";
+import "dotenv/config";
+import { createServer, type IncomingMessage } from "node:http";
+import { Readable } from "node:stream";
+import type { UIMessage } from "ai";
+import { createAgentChatResponse } from "./chat-runtime.ts";
 
-const registry = buildAgentRegistry(orchestrator);
+const host = process.env.HOST ?? "0.0.0.0";
+const port = Number(process.env.PORT ?? "8787");
+const agentServiceApiKey = process.env.AGENT_SERVICE_API_KEY;
 
-function getHandoffTarget(output: unknown): string | null {
-  if (typeof output !== "object" || output === null) return null;
-  const parsed = output as Record<string, unknown>;
-  if (parsed.__handoff !== true) return null;
-  return typeof parsed.targetAgent === "string" ? parsed.targetAgent : null;
+function jsonResponse(
+  status: number,
+  body: Record<string, unknown>,
+  res: import("node:http").ServerResponse,
+) {
+  res.statusCode = status;
+  res.setHeader("content-type", "application/json; charset=utf-8");
+  res.end(JSON.stringify(body));
 }
 
-export async function createAgentChatResponse(messages: UIMessage[]) {
-  const { activeAgent: activeAgentName } = extractConversationState(
-    messages,
-    orchestrator.name,
+async function readBody(req: IncomingMessage): Promise<string> {
+  let data = "";
+  for await (const chunk of req) {
+    data += chunk;
+  }
+  return data;
+}
+
+const server = createServer(async (req, res) => {
+  const url = new URL(
+    req.url ?? "/",
+    `http://${req.headers.host ?? `${host}:${port}`}`,
   );
-  const activeAgent = registry.get(activeAgentName) ?? orchestrator;
-  const tools = resolveTools(activeAgent);
-  const systemPrompt = buildSystemPrompt(activeAgent);
 
-  const stream = createUIMessageStream({
-    execute: async ({ writer }) => {
-      writer.write({
-        type: "message-metadata",
-        messageMetadata: { agentName: activeAgent.name },
-      });
+  if (req.method === "GET" && url.pathname === "/health") {
+    return jsonResponse(200, { ok: true }, res);
+  }
 
-      const result = streamText({
-        model: anthropic(activeAgent.model ?? "claude-3-haiku-20240307"),
-        system: systemPrompt,
-        messages: await convertToModelMessages(messages),
-        tools,
-        stopWhen: stepCountIs(activeAgent.maxSteps ?? 5),
-        onStepFinish: ({ toolResults }) => {
-          for (const toolResult of toolResults) {
-            const handoffTarget = getHandoffTarget(toolResult.output);
-            if (!handoffTarget) continue;
-            writer.write({
-              type: "message-metadata",
-              messageMetadata: {
-                agentName: handoffTarget,
-                handoffTarget,
-              },
-            });
-          }
-        },
-      });
+  if (req.method !== "POST" || url.pathname !== "/api/chat") {
+    return jsonResponse(404, { error: "Not found" }, res);
+  }
 
-      writer.merge(result.toUIMessageStream());
-    },
-    onError: (error) => {
-      console.error("Chat stream error:", error);
-      return "An error occurred while processing your request.";
-    },
-  });
+  if (agentServiceApiKey) {
+    const authHeader = req.headers.authorization;
+    if (authHeader !== `Bearer ${agentServiceApiKey}`) {
+      return jsonResponse(401, { error: "Unauthorized" }, res);
+    }
+  }
 
-  return createUIMessageStreamResponse({ stream });
-}
+  let body: unknown;
+  try {
+    body = JSON.parse(await readBody(req));
+  } catch {
+    return jsonResponse(400, { error: "Invalid JSON body" }, res);
+  }
+
+  const maybeMessages = (body as { messages?: unknown } | null)?.messages;
+  if (!Array.isArray(maybeMessages)) {
+    return jsonResponse(400, {
+      error: "Invalid payload: expected { messages: UIMessage[] }",
+    }, res);
+  }
+
+  try {
+    const upstreamResponse = await createAgentChatResponse(
+      maybeMessages as UIMessage[],
+    );
+
+    res.statusCode = upstreamResponse.status;
+    upstreamResponse.headers.forEach((value, key) => {
+      if (key.toLowerCase() === "transfer-encoding") return;
+      res.setHeader(key, value);
+    });
+
+    if (!upstreamResponse.body) {
+      res.end();
+      return;
+    }
+
+    Readable.fromWeb(
+      upstreamResponse.body as unknown as ReadableStream<Uint8Array>,
+    ).pipe(res);
+  } catch (error) {
+    console.error("Agent service error:", error);
+    jsonResponse(500, { error: "Failed to process chat request" }, res);
+  }
+});
+
+server.listen(port, host, () => {
+  console.log(`Agent service listening on http://${host}:${port}`);
+});

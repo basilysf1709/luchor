@@ -1,6 +1,6 @@
-import { defineAgent } from "../define-agent";
-import { researcher } from "./researcher";
-import { analyst } from "./analyst";
+import { defineAgent } from "../define-agent.ts";
+import { researcher } from "./researcher.ts";
+import { analyst } from "./analyst.ts";
 
 export const orchestrator = defineAgent({
   name: "orchestrator",

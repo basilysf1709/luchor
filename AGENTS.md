@@ -14,11 +14,16 @@ This repository currently centers on the `web/` frontend (Next.js 16 + TypeScrip
 - `research-papers/`: reference material, not part of runtime code.
 
 ## Build, Test, and Development Commands
-Run commands from `web/`:
+Run web commands from `web/`:
 - `npm run dev`: start local dev server at `http://localhost:3000`.
 - `npm run lint`: run ESLint (Next.js core-web-vitals + TypeScript rules).
 - `npm run build`: create a production build.
 - `npm run start`: serve the production build.
+
+Run agent commands from `agent/`:
+- `npm install`: install agent service dependencies.
+- `npm run dev`: start the agent microservice in watch mode.
+- `npm run start`: start the agent microservice once.
 
 Typical flow:
 ```bash
@@ -50,7 +55,8 @@ Recent commits use short, imperative subjects (for example `Update header: ...`)
 - **assistant-ui** (`@assistant-ui/react`, `@assistant-ui/react-ai-sdk`) — pre-built chat UI primitives.
 - **Agent DSL** (`agent/`) — `defineTool()` and `defineAgent()` builders with handoff support.
 - Runtime engine (`agent/runtime/`) bridges DSL definitions to AI SDK v6 `ToolSet` format.
-- **Agent runtime** (`agent/server.ts`) uses Vercel AI SDK v6 (`ai`, `@ai-sdk/anthropic`) for streaming and tool execution.
+- **Agent HTTP service** (`agent/server.ts`) exposes `/health` and `/api/chat`.
+- **Agent runtime** (`agent/chat-runtime.ts`) uses Vercel AI SDK v6 (`ai`, `@ai-sdk/anthropic`) for streaming and tool execution.
 - Handoffs use `transfer_to_<agent>` tools returning `{ __handoff: true, targetAgent }` markers.
 - AI SDK v6 uses `inputSchema` (not `parameters`), async `convertToModelMessages()`, and `stopWhen: stepCountIs(n)` instead of `maxSteps`.
 

@@ -1,2 +1,2 @@
-export { searchWeb } from "./search-web";
-export { analyzeData } from "./analyze-data";
+export { searchWeb } from "./search-web.ts";
+export { analyzeData } from "./analyze-data.ts";

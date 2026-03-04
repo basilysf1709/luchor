@@ -1,5 +1,5 @@
-import { defineAgent } from "../define-agent";
-import { searchWeb } from "../tools/search-web";
+import { defineAgent } from "../define-agent.ts";
+import { searchWeb } from "../tools/search-web.ts";
 
 export const researcher = defineAgent({
   name: "researcher",

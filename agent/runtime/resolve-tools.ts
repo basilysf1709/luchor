@@ -1,5 +1,5 @@
 import type { ToolSet } from "ai";
-import type { AgentDefinition } from "../types";
+import type { AgentDefinition } from "../types.ts";
 import { z } from "zod";
 
 export function resolveTools(agent: AgentDefinition): ToolSet {

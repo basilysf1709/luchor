@@ -1,5 +1,5 @@
-import { defineAgent } from "../define-agent";
-import { analyzeData } from "../tools/analyze-data";
+import { defineAgent } from "../define-agent.ts";
+import { analyzeData } from "../tools/analyze-data.ts";
 
 export const analyst = defineAgent({
   name: "analyst",

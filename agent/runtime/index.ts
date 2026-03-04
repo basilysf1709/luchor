@@ -1,6 +1,6 @@
-export { resolveTools } from "./resolve-tools";
+export { resolveTools } from "./resolve-tools.ts";
 export {
   buildAgentRegistry,
   buildSystemPrompt,
   extractConversationState,
-} from "./resolve-agent";
+} from "./resolve-agent.ts";

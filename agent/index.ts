@@ -1,8 +1,8 @@
-export { defineTool } from "./define-tool";
-export { defineAgent } from "./define-agent";
+export { defineTool } from "./define-tool.ts";
+export { defineAgent } from "./define-agent.ts";
 export type {
   ToolDefinition,
   AgentDefinition,
   MessageMetadata,
   ConversationState,
-} from "./types";
+} from "./types.ts";

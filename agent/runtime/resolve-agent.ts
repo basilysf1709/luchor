@@ -1,4 +1,4 @@
-import type { AgentDefinition, ConversationState } from "../types";
+import type { AgentDefinition, ConversationState } from "../types.ts";
 
 type UIMessageLike = {
   role: string;

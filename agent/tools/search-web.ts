@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { defineTool } from "../define-tool";
+import { defineTool } from "../define-tool.ts";
 
 export const searchWeb = defineTool({
   name: "search_web",
