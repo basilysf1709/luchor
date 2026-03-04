@@ -65,10 +65,10 @@ export default function Home() {
   }
 
   return (
-    <SidebarProvider defaultOpen={false}>
+    <SidebarProvider defaultOpen={false} className="h-[100dvh] overflow-hidden">
       <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-12 items-center justify-between px-4">
+      <SidebarInset className="min-h-0 overflow-hidden">
+        <header className="flex h-12 shrink-0 items-center justify-between px-4">
           <SidebarTrigger />
           <div className="flex items-center gap-1.5 mt-4 mr-4">
             <a href="https://discord.gg" target="_blank" rel="noopener noreferrer" className="flex h-7 w-7 items-center justify-center text-black/50 hover:text-black">
@@ -100,7 +100,7 @@ export default function Home() {
         {session && signOutError ? (
           <p className="px-4 text-sm text-red-600">{signOutError}</p>
         ) : null}
-        <main className="flex flex-1 flex-col min-h-0">
+        <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <ChatPage />
         </main>
       </SidebarInset>

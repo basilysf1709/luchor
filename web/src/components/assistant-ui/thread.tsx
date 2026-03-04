@@ -52,7 +52,7 @@ export const Thread: FC = () => {
       <ThreadPrimitive.Viewport
         turnAnchor="bottom"
         autoScroll
-        className="aui-thread-viewport relative flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto scroll-smooth px-4"
+        className="aui-thread-viewport relative flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto overscroll-contain scroll-smooth px-4"
       >
         <AuiIf condition={(s) => s.thread.isEmpty}>
           <div className="mx-auto my-auto w-full max-w-(--thread-max-width)">
@@ -72,7 +72,7 @@ export const Thread: FC = () => {
         />
 
         <AuiIf condition={(s) => !s.thread.isEmpty}>
-          <ThreadPrimitive.ViewportFooter className="aui-thread-viewport-footer sticky bottom-0 mx-auto mt-auto flex w-full max-w-(--thread-max-width) flex-col gap-4 overflow-visible rounded-t-3xl bg-background pb-4 pt-4 md:pb-6">
+          <ThreadPrimitive.ViewportFooter className="aui-thread-viewport-footer sticky bottom-0 z-20 mx-auto mt-auto flex w-full max-w-(--thread-max-width) flex-col gap-4 overflow-visible rounded-t-3xl bg-background pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 md:pb-[max(1.5rem,env(safe-area-inset-bottom))]">
             <ThreadScrollToBottom />
             <Composer />
           </ThreadPrimitive.ViewportFooter>
