@@ -1,5 +1,10 @@
-import type { UIMessage } from "ai";
 import type { AgentDefinition, ConversationState } from "../types";
+
+type UIMessageLike = {
+  role: string;
+  parts?: unknown;
+  metadata?: unknown;
+};
 
 /**
  * Recursively walk the agent graph and build a flat name -> agent map.
@@ -45,12 +50,20 @@ export function buildSystemPrompt(agent: AgentDefinition): string {
  * Extract the tool name from a UI message part.
  * In AI SDK v6, tool parts have type `tool-${toolName}` or `dynamic-tool` with a `toolName` field.
  */
-function getToolNameFromPart(part: { type: string; toolName?: string }): string | null {
-  if (part.type === "dynamic-tool" && part.toolName) {
-    return part.toolName;
+function toRecord(value: unknown): Record<string, unknown> | null {
+  if (typeof value !== "object" || value === null) return null;
+  return value as Record<string, unknown>;
+}
+
+function getToolNameFromPart(part: unknown): string | null {
+  const parsed = toRecord(part);
+  if (!parsed || typeof parsed.type !== "string") return null;
+
+  if (parsed.type === "dynamic-tool" && typeof parsed.toolName === "string") {
+    return parsed.toolName;
   }
-  if (part.type.startsWith("tool-")) {
-    return part.type.slice(5);
+  if (parsed.type.startsWith("tool-")) {
+    return parsed.type.slice(5);
   }
   return null;
 }
@@ -60,20 +73,24 @@ function getToolNameFromPart(part: { type: string; toolName?: string }): string 
  * The last handoff in the conversation determines the active agent.
  */
 export function extractConversationState(
-  messages: UIMessage[],
+  messages: UIMessageLike[],
   rootAgentName: string,
 ): ConversationState {
   let activeAgent = rootAgentName;
 
   for (const message of messages) {
-    if (message.role === "assistant" && message.parts) {
+    if (message.role === "assistant" && Array.isArray(message.parts)) {
       for (const part of message.parts) {
-        const toolName = getToolNameFromPart(part as { type: string; toolName?: string });
+        const toolName = getToolNameFromPart(part);
         if (toolName && toolName.startsWith("transfer_to_")) {
           // Check if the tool result contains a handoff marker
-          const p = part as Record<string, unknown>;
-          if (p.state === "result" && typeof p.output === "object" && p.output !== null) {
-            const output = p.output as Record<string, unknown>;
+          const p = toRecord(part);
+          if (!p) continue;
+          if (
+            (p.state === "result" || p.state === "output-available") &&
+            toRecord(p.output)
+          ) {
+            const output = toRecord(p.output)!;
             if (output.__handoff && typeof output.targetAgent === "string") {
               activeAgent = output.targetAgent;
             }
@@ -83,9 +100,16 @@ export function extractConversationState(
     }
 
     // Also check metadata attached to messages
-    const metadata = message.metadata as Record<string, unknown> | undefined;
-    if (metadata && typeof metadata.handoffTarget === "string") {
-      activeAgent = metadata.handoffTarget;
+    const metadata = toRecord(message.metadata);
+    if (metadata) {
+      if (typeof metadata.handoffTarget === "string") {
+        activeAgent = metadata.handoffTarget;
+      } else if (
+        toRecord(metadata.custom) &&
+        typeof toRecord(metadata.custom)?.handoffTarget === "string"
+      ) {
+        activeAgent = String(toRecord(metadata.custom)?.handoffTarget);
+      }
     }
   }
 

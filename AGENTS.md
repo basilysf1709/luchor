@@ -6,7 +6,7 @@ This repository currently centers on the `web/` frontend (Next.js 16 + TypeScrip
 - `web/src/components/`: application components; reusable primitives live in `web/src/components/ui/`.
 - `web/src/hooks/`: custom React hooks (for example `use-mobile.ts`).
 - `web/src/lib/`: shared utilities and integrations (for example `utils.ts`, `db.ts`).
-- `web/src/lib/agents/`: Agent DSL layer — declarative tool/agent/handoff definitions and runtime bridge to AI SDK v6.
+- `web/agent/`: Agent DSL layer — declarative tool/agent/handoff definitions and runtime bridge to AI SDK v6.
 - `web/src/app/api/chat/`: Chat API route (streaming via Vercel AI SDK + Anthropic).
 - `web/src/components/chat/`: Chat UI components (ChatPage, AgentIndicator).
 - `web/src/components/assistant-ui/`: assistant-ui scaffolded components (Thread, ToolFallback, etc.).
@@ -48,8 +48,8 @@ Recent commits use short, imperative subjects (for example `Update header: ...`)
 ## AI Chat Architecture
 - **Vercel AI SDK v6** (`ai`, `@ai-sdk/anthropic`) — streaming, tool execution, message conversion.
 - **assistant-ui** (`@assistant-ui/react`, `@assistant-ui/react-ai-sdk`) — pre-built chat UI primitives.
-- **Agent DSL** (`src/lib/agents/`) — `defineTool()` and `defineAgent()` builders with handoff support.
-- Runtime engine (`src/lib/agents/runtime/`) bridges DSL definitions to AI SDK v6 `ToolSet` format.
+- **Agent DSL** (`web/agent/`) — `defineTool()` and `defineAgent()` builders with handoff support.
+- Runtime engine (`web/agent/runtime/`) bridges DSL definitions to AI SDK v6 `ToolSet` format.
 - Handoffs use `transfer_to_<agent>` tools returning `{ __handoff: true, targetAgent }` markers.
 - AI SDK v6 uses `inputSchema` (not `parameters`), async `convertToModelMessages()`, and `stopWhen: stepCountIs(n)` instead of `maxSteps`.
 

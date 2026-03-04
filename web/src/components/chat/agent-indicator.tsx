@@ -5,9 +5,15 @@ import { useMessage } from "@assistant-ui/react";
 export function AgentIndicator() {
   const agentName = useMessage((m) => {
     if (m.role !== "assistant") return null;
-    // Metadata from the AI SDK stream is stored in metadata.custom
-    return (m.metadata?.custom as Record<string, unknown> | undefined)
-      ?.agentName as string | undefined;
+    const metadata = m.metadata as Record<string, unknown> | undefined;
+    if (typeof metadata?.agentName === "string") {
+      return metadata.agentName;
+    }
+    const custom = metadata?.custom as Record<string, unknown> | undefined;
+    if (typeof custom?.agentName === "string") {
+      return custom.agentName;
+    }
+    return null;
   });
 
   if (!agentName) return null;
