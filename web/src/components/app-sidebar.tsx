@@ -3,14 +3,7 @@
 import Image from "next/image";
 import {
   AlignLeft,
-  Compass,
-  Monitor,
-  TrendingUp,
-  MoreHorizontal,
-  Bell,
   User,
-  ArrowUpRight,
-  Download,
   PanelLeft,
 } from "lucide-react";
 
@@ -30,17 +23,17 @@ import {
 
 const mainNav = [
   { label: "Library", icon: AlignLeft, active: true },
-  { label: "Discover", icon: Compass },
-  { label: "Spaces", icon: Monitor },
-  { label: "Finance", icon: TrendingUp },
-  { label: "More", icon: MoreHorizontal },
+  // { label: "Discover", icon: Compass },
+  // { label: "Spaces", icon: Monitor },
+  // { label: "Finance", icon: TrendingUp },
+  // { label: "More", icon: MoreHorizontal },
 ];
 
 const bottomNav = [
-  { label: "Notifications", icon: Bell },
+  // { label: "Notifications", icon: Bell },
   { label: "Account", icon: User },
-  { label: "Upgrade", icon: ArrowUpRight },
-  { label: "Install", icon: Download },
+  // { label: "Upgrade", icon: ArrowUpRight },
+  // { label: "Install", icon: Download },
 ];
 
 function SidebarToggle() {

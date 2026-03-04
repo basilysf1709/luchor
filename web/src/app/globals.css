@@ -115,5 +115,48 @@
   [data-sidebar="menu-button"] {
     height: 2.5rem;
   }
+
+  /* assistant-ui theme overrides */
+  .aui-thread-root {
+    color: var(--foreground);
+  }
+  .aui-assistant-message-content {
+    color: var(--foreground);
+  }
+  .aui-md {
+    color: var(--foreground);
+  }
+  .aui-user-message-content {
+    background-color: #edffee;
+    color: #003706;
+  }
+  .aui-composer-attachment-dropzone {
+    border-color: #afffb6;
+    background-color: #edffee;
+  }
+  .aui-composer-attachment-dropzone:has(textarea:focus-visible) {
+    border-color: #00960e;
+  }
+  .aui-composer-send {
+    background-color: #067511;
+    color: #ffffff;
+  }
+  .aui-composer-send:hover {
+    background-color: #00960e;
+  }
+  .aui-composer-cancel {
+    background-color: #067511;
+    color: #ffffff;
+  }
+  .aui-thread-welcome-suggestion {
+    border-color: #afffb6;
+  }
+  .aui-thread-welcome-suggestion:hover {
+    background-color: #edffee;
+  }
+  .aui-tool-fallback-root {
+    border-color: #afffb6;
+    background-color: rgba(237, 255, 238, 0.3);
+  }
 }
 
