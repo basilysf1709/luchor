@@ -52,7 +52,7 @@ export const Thread: FC = () => {
       <ThreadPrimitive.Viewport
         turnAnchor="bottom"
         autoScroll
-        className="aui-thread-viewport relative flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto overscroll-contain scroll-smooth px-4"
+        className="aui-thread-viewport scrollbar-hidden relative flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto overscroll-contain scroll-smooth px-4"
       >
         <AuiIf condition={(s) => s.thread.isEmpty}>
           <div className="mx-auto my-auto w-full max-w-(--thread-max-width)">

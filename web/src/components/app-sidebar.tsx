@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   AlignLeft,
   User,
   PanelLeft,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 import {
   Sidebar,
@@ -22,7 +24,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const mainNav = [
-  { label: "Library", icon: AlignLeft, active: true },
+  { label: "Library", icon: AlignLeft, href: "/" },
   // { label: "Discover", icon: Compass },
   // { label: "Spaces", icon: Monitor },
   // { label: "Finance", icon: TrendingUp },
@@ -31,7 +33,7 @@ const mainNav = [
 
 const bottomNav = [
   // { label: "Notifications", icon: Bell },
-  { label: "Account", icon: User },
+  { label: "Account", icon: User, href: "/account" },
   // { label: "Upgrade", icon: ArrowUpRight },
   // { label: "Install", icon: Download },
 ];
@@ -47,6 +49,15 @@ function SidebarToggle() {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
+
+  const isActiveRoute = (href: string) => {
+    if (href === "/") {
+      return pathname === "/";
+    }
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -72,17 +83,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               {mainNav.map((item) => (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton
-                    isActive={item.active}
+                    asChild
+                    isActive={isActiveRoute(item.href)}
                     tooltip={item.label}
                   >
-                    <item.icon />
-                    <span
-                      className={
-                        item.active ? "underline underline-offset-4" : ""
-                      }
-                    >
-                      {item.label}
-                    </span>
+                    <Link href={item.href}>
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -94,9 +102,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           {bottomNav.map((item) => (
             <SidebarMenuItem key={item.label}>
-              <SidebarMenuButton tooltip={item.label}>
-                <item.icon />
-                <span>{item.label}</span>
+              <SidebarMenuButton
+                asChild
+                isActive={isActiveRoute(item.href)}
+                tooltip={item.label}
+              >
+                <Link href={item.href}>
+                  <item.icon />
+                  <span>{item.label}</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
