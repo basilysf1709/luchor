@@ -6,8 +6,8 @@ This repository currently centers on the `web/` frontend (Next.js 16 + TypeScrip
 - `web/src/components/`: application components; reusable primitives live in `web/src/components/ui/`.
 - `web/src/hooks/`: custom React hooks (for example `use-mobile.ts`).
 - `web/src/lib/`: shared utilities and integrations (for example `utils.ts`, `db.ts`).
-- `web/agent/`: Agent DSL layer — declarative tool/agent/handoff definitions and runtime bridge to AI SDK v6.
-- `web/src/app/api/chat/`: Chat API route (streaming via Vercel AI SDK + Anthropic).
+- `agent/`: Agent DSL layer — declarative tool/agent/handoff definitions and runtime bridge to AI SDK v6.
+- `web/src/app/api/chat/`: Chat API route that proxies requests to the deployed agent service.
 - `web/src/components/chat/`: Chat UI components (ChatPage, AgentIndicator).
 - `web/src/components/assistant-ui/`: assistant-ui scaffolded components (Thread, ToolFallback, etc.).
 - `web/public/assets/`: static files such as logos.
@@ -46,14 +46,16 @@ Recent commits use short, imperative subjects (for example `Update header: ...`)
 - Link related issue/task IDs when available.
 
 ## AI Chat Architecture
-- **Vercel AI SDK v6** (`ai`, `@ai-sdk/anthropic`) — streaming, tool execution, message conversion.
+- **Web chat route** (`web/src/app/api/chat/route.ts`) — forwards chat requests to the external agent service URL.
 - **assistant-ui** (`@assistant-ui/react`, `@assistant-ui/react-ai-sdk`) — pre-built chat UI primitives.
-- **Agent DSL** (`web/agent/`) — `defineTool()` and `defineAgent()` builders with handoff support.
-- Runtime engine (`web/agent/runtime/`) bridges DSL definitions to AI SDK v6 `ToolSet` format.
+- **Agent DSL** (`agent/`) — `defineTool()` and `defineAgent()` builders with handoff support.
+- Runtime engine (`agent/runtime/`) bridges DSL definitions to AI SDK v6 `ToolSet` format.
+- **Agent runtime** (`agent/server.ts`) uses Vercel AI SDK v6 (`ai`, `@ai-sdk/anthropic`) for streaming and tool execution.
 - Handoffs use `transfer_to_<agent>` tools returning `{ __handoff: true, targetAgent }` markers.
 - AI SDK v6 uses `inputSchema` (not `parameters`), async `convertToModelMessages()`, and `stopWhen: stepCountIs(n)` instead of `maxSteps`.
 
 ## Security & Configuration Tips
 - Keep secrets in `.env`/`.env.local`; never commit credentials.
-- `ANTHROPIC_API_KEY` must be set in `.env` for the chat API route to work.
+- `AGENT_SERVICE_CHAT_URL` must be set for the web chat proxy route.
+- `ANTHROPIC_API_KEY` must be set in the separately deployed agent service environment.
 - If using `src/lib/db.ts`, ensure `DATABASE_URL` is set locally before running features that require DB access.

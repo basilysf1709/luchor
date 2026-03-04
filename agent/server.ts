@@ -1,4 +1,3 @@
-import { anthropic } from "@ai-sdk/anthropic";
 import {
   convertToModelMessages,
   createUIMessageStream,
@@ -7,6 +6,7 @@ import {
   streamText,
   type UIMessage,
 } from "ai";
+import { anthropic } from "@ai-sdk/anthropic";
 import { orchestrator } from "./agents";
 import {
   buildAgentRegistry,
@@ -71,4 +71,3 @@ export async function createAgentChatResponse(messages: UIMessage[]) {
 
   return createUIMessageStreamResponse({ stream });
 }
-
