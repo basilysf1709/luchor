@@ -36,11 +36,18 @@ const authDatabasePool = new Pool({
 });
 
 function normalizeOrigin(value: string | undefined): string | null {
-  if (!value) return null;
-  if (value.startsWith("http://") || value.startsWith("https://")) {
-    return value;
+  const trimmed = value?.trim();
+  if (!trimmed) return null;
+  const withProtocol =
+    trimmed.startsWith("http://") || trimmed.startsWith("https://")
+      ? trimmed
+      : `https://${trimmed}`;
+
+  try {
+    return new URL(withProtocol).origin;
+  } catch {
+    return null;
   }
-  return `https://${value}`;
 }
 
 const deploymentOrigin =
@@ -60,6 +67,8 @@ const baseUrl =
   deploymentOrigin ??
   "http://localhost:3000";
 
+const betterAuthApiKey = process.env.BETTER_AUTH_API_KEY?.trim();
+
 export const auth = betterAuth({
   appName: "Luchor",
   baseURL: baseUrl,
@@ -71,7 +80,7 @@ export const auth = betterAuth({
   plugins: [
     nextCookies(),
     dash({
-      apiKey: process.env.BETTER_AUTH_API_KEY,
+      apiKey: betterAuthApiKey,
     }),
   ],
 });
