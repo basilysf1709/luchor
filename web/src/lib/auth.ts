@@ -35,18 +35,34 @@ const authDatabasePool = new Pool({
   connectionString: databaseUrl,
 });
 
+function normalizeOrigin(value: string | undefined): string | null {
+  if (!value) return null;
+  if (value.startsWith("http://") || value.startsWith("https://")) {
+    return value;
+  }
+  return `https://${value}`;
+}
+
+const deploymentOrigin =
+  normalizeOrigin(process.env.VERCEL_PROJECT_PRODUCTION_URL) ??
+  normalizeOrigin(process.env.VERCEL_URL);
+
 const configuredOrigins = [
-  process.env.BETTER_AUTH_URL,
-  process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
+  normalizeOrigin(process.env.BETTER_AUTH_URL),
+  normalizeOrigin(process.env.NEXT_PUBLIC_BETTER_AUTH_URL),
+  deploymentOrigin,
   "http://localhost:3000",
 ].filter((origin): origin is string => Boolean(origin));
 
+const baseUrl =
+  normalizeOrigin(process.env.BETTER_AUTH_URL) ??
+  normalizeOrigin(process.env.NEXT_PUBLIC_BETTER_AUTH_URL) ??
+  deploymentOrigin ??
+  "http://localhost:3000";
+
 export const auth = betterAuth({
   appName: "Luchor",
-  baseURL:
-    process.env.BETTER_AUTH_URL ??
-    process.env.NEXT_PUBLIC_BETTER_AUTH_URL ??
-    "http://localhost:3000",
+  baseURL: baseUrl,
   trustedOrigins: configuredOrigins,
   database: authDatabasePool,
   emailAndPassword: {
