@@ -1,0 +1,21 @@
+.git
+.gitignore
+.DS_Store
+
+# Keep Docker build context small
+web
+research-papers
+output
+__pycache__
+*.pyc
+
+# Node artifacts
+node_modules
+agent/node_modules
+
+# Local env files (templates are fine)
+.env
+.env.local
+agent/.env
+web/.env
+web/.env.local

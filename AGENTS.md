@@ -24,6 +24,7 @@ Run agent commands from `agent/`:
 - `npm install`: install agent service dependencies.
 - `npm run dev`: start the agent microservice in watch mode.
 - `npm run start`: start the agent microservice once.
+- Railway deploy: root `Dockerfile` builds and runs the `agent/` service (`PORT` is read from env).
 
 Typical flow:
 ```bash
@@ -64,4 +65,5 @@ Recent commits use short, imperative subjects (for example `Update header: ...`)
 - Keep secrets in `.env`/`.env.local`; never commit credentials.
 - `AGENT_SERVICE_CHAT_URL` must be set for the web chat proxy route.
 - `ANTHROPIC_API_KEY` must be set in the separately deployed agent service environment.
+- For Railway agent service, set env vars at minimum: `ANTHROPIC_API_KEY` (required) and optionally `AGENT_SERVICE_API_KEY`.
 - If using `src/lib/db.ts`, ensure `DATABASE_URL` is set locally before running features that require DB access.
