@@ -64,7 +64,7 @@ function CodeBlockHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "flex items-center justify-between border-b border-black/6 bg-[#fafafa] px-4 py-3",
+        "flex items-center justify-between border-b border-screamin-green-200 bg-screamin-green-50/50 px-3 py-2",
         className,
       )}
       {...props}
@@ -99,8 +99,10 @@ function CodeBlockFilename({
     <button
       type="button"
       className={cn(
-        "rounded-full px-2.5 py-1 text-xs font-medium",
-        active ? "bg-white text-black shadow-[0_1px_2px_rgba(0,0,0,0.05)]" : "text-black/45",
+        "rounded-full px-2 py-0.5 text-xs font-medium",
+        active
+          ? "border border-screamin-green-200 bg-white text-screamin-green-900 shadow-[0_1px_2px_rgba(0,55,6,0.06)]"
+          : "text-screamin-green-800/55",
         className,
       )}
       {...props}
@@ -140,7 +142,10 @@ function CodeBlockCopyButton({
     <button
       type="button"
       onClick={handleCopy}
-      className={cn("text-black/45 transition hover:text-black/75", className)}
+      className={cn(
+        "text-screamin-green-800/55 transition hover:text-screamin-green-900",
+        className,
+      )}
     >
       {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
     </button>
@@ -186,7 +191,12 @@ function CodeBlockContent({
     const html = code.split(/(<[^>]+>)/g).filter(Boolean);
 
     return (
-      <pre className={cn("bg-white px-4 py-4 text-[13px] leading-6", className)}>
+      <pre
+        className={cn(
+          "whitespace-pre-wrap break-words bg-white px-4 py-3 text-[13px] leading-5",
+          className,
+        )}
+      >
         <code>
           {html.map((segment, index) => {
             if (!segment.startsWith("<")) {
@@ -236,7 +246,12 @@ function CodeBlockContent({
   }
 
   return (
-    <pre className={cn("bg-white px-4 py-4 text-[13px] leading-6 text-black/82", className)}>
+    <pre
+      className={cn(
+        "whitespace-pre-wrap break-words bg-white px-4 py-3 text-[13px] leading-5 text-black/82",
+        className,
+      )}
+    >
       <code>{children}</code>
     </pre>
   );

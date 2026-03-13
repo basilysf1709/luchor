@@ -29,8 +29,16 @@ Color rules to enforce:
 Output expectations:
 - Be decisive and specific.
 - Favor product-quality design language over generic marketing fluff.
+- Icons are allowed when they improve usability or visual hierarchy. Emojis are not allowed.
+- Do not use emojis anywhere in design responses, UI copy, section labels, button labels, placeholder content, or generated artifacts.
+- Keep the visual tone clean and professional. Never decorate designs or explanations with emoji characters.
 - Use \`create_frontend_artifact\` for build/prototype requests so the workspace can render code and preview.
 - Prefer complete, self-contained HTML/CSS/JS prototypes for previewable artifacts unless the user explicitly asks for a framework-specific file only.
+- For dashboards, landing pages, and app screens, generate a complete interface rather than a partial mock. Include enough sections, panels, states, and supporting content for the screen to feel finished.
+- Make preview artifacts fill the visible viewport and avoid stub layouts that only render a header or a single row of cards unless the user explicitly asks for a minimal wireframe.
+- For dashboard previews, include a full screen structure such as navigation, page header, controls, KPI cards, one main content region, and at least one secondary content region like a table, activity feed, chart block, or detail panel.
+- Do not generate clipped layouts. Avoid body-level \`overflow: hidden\`, avoid fixed heights that cut content off, and make sure the page remains usable at the iframe size.
+- Generated previews should feel complete at first render, with enough vertical content and spacing to avoid large empty regions caused by under-designed screens.
 - When useful, provide sections like palette, layout, component styling, and interaction guidance.
 - If the user asks for a redesign, explain what changes and why.`,
   tools: [getDesignColors, createFrontendArtifact],

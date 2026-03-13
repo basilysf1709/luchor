@@ -16,6 +16,7 @@ import {
   ErrorPrimitive,
   MessagePrimitive,
   ThreadPrimitive,
+  useAssistantRuntime,
 } from "@assistant-ui/react";
 import {
   ArrowDownIcon,
@@ -37,6 +38,7 @@ import {
   Phone,
   RefreshCwIcon,
   SquareIcon,
+  Trash2,
   Video,
 } from "lucide-react";
 import type { FC } from "react";
@@ -44,7 +46,7 @@ import type { FC } from "react";
 export const Thread: FC = () => {
   return (
     <ThreadPrimitive.Root
-      className="aui-root aui-thread-root @container flex h-full min-h-0 flex-col bg-background"
+      className="aui-root aui-thread-root @container relative flex h-full min-h-0 flex-col bg-background"
       style={{
         ["--thread-max-width" as string]: "44rem",
       }}
@@ -71,13 +73,16 @@ export const Thread: FC = () => {
           }}
         />
 
-        <AuiIf condition={(s) => !s.thread.isEmpty}>
-          <ThreadPrimitive.ViewportFooter className="aui-thread-viewport-footer sticky bottom-0 z-20 mx-auto mt-auto flex w-full max-w-(--thread-max-width) flex-col gap-4 overflow-visible rounded-t-3xl bg-background pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 md:pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+      </ThreadPrimitive.Viewport>
+
+      <AuiIf condition={(s) => !s.thread.isEmpty}>
+        <div className="aui-thread-footer relative z-20 bg-background px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 md:pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+          <div className="mx-auto flex w-full max-w-(--thread-max-width) flex-col gap-4">
             <ThreadScrollToBottom />
             <Composer />
-          </ThreadPrimitive.ViewportFooter>
-        </AuiIf>
-      </ThreadPrimitive.Viewport>
+          </div>
+        </div>
+      </AuiIf>
     </ThreadPrimitive.Root>
   );
 };
@@ -124,6 +129,8 @@ const ThreadScrollToBottom: FC = () => {
 };
 
 const Composer: FC = () => {
+  const runtime = useAssistantRuntime();
+
   return (
     <ComposerPrimitive.Root className="aui-composer-root relative flex w-full flex-col">
       <div className="w-full border border-screamin-green-200 bg-screamin-green-50 p-4 shadow-md">
@@ -136,6 +143,16 @@ const Composer: FC = () => {
         />
         <div className="flex items-center justify-end">
           <div className="flex items-center gap-2">
+            <AuiIf condition={(s) => !s.thread.isEmpty}>
+              <button
+                type="button"
+                aria-label="Clear conversation"
+                className="flex h-8 w-8 items-center justify-center border border-screamin-green-200 text-screamin-green-700/40 hover:text-screamin-green-800"
+                onClick={() => runtime.thread.reset()}
+              >
+                <Trash2 size={16} strokeWidth={1.5} />
+              </button>
+            </AuiIf>
             <button
               type="button"
               className="flex h-8 w-8 items-center justify-center border border-screamin-green-200 text-screamin-green-700/40 hover:text-screamin-green-800"

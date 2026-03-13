@@ -14,12 +14,14 @@ const artifactInput = z.object({
   code: z
     .string()
     .min(1)
-    .describe("The code that should appear in the code tab."),
+    .describe(
+      "The code that should appear in the code tab. For UI requests, prefer complete implementations over partial snippets, and avoid stub layouts that only show a header or one row of content.",
+    ),
   previewHtml: z
     .string()
     .min(1)
     .describe(
-      "A complete HTML document for the preview tab. Use inline CSS and JavaScript so it renders standalone in an iframe.",
+      "A complete HTML document for the preview tab. Use inline CSS and JavaScript so it renders standalone in an iframe, fills the viewport, shows a complete screen rather than only a header or partial section, and does not clip content with fixed heights or overflow-hidden body styles.",
     ),
   notes: z
     .array(z.string())

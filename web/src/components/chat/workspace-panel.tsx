@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Expand, LoaderIcon, X } from "lucide-react";
 import { useAuiState } from "@assistant-ui/react";
 import { cn } from "@/lib/utils";
 import type { BundledLanguage } from "@/components/kibo-ui/code-block";
@@ -14,7 +15,7 @@ import {
   CodeBlockHeader,
   CodeBlockItem,
 } from "@/components/kibo-ui/code-block";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type FrontendArtifact = {
@@ -132,6 +133,11 @@ type WorkspaceState = {
   isStreaming: boolean;
 };
 
+type WorkspacePanelProps = {
+  isExpanded: boolean;
+  onExpandedChange: (nextValue: boolean) => void;
+};
+
 function useSmoothedWorkspace(workspace: WorkspaceState | null) {
   const [smoothedWorkspace, setSmoothedWorkspace] = useState(workspace);
 
@@ -203,8 +209,13 @@ function getLatestArtifact(messages: readonly MessageLike[]): WorkspaceState | n
   return null;
 }
 
-export function WorkspacePanel() {
-  const [activeTab, setActiveTab] = useState<"code" | "preview">("preview");
+export function WorkspacePanel({
+  isExpanded,
+  onExpandedChange,
+}: WorkspacePanelProps) {
+  const [activeTab, setActiveTab] = useState<"code" | "preview">("code");
+  const [isIframeLoaded, setIsIframeLoaded] = useState(false);
+  const [dismissedArtifactIdentity, setDismissedArtifactIdentity] = useState<string | null>(null);
   const messages = useAuiState(
     (s) => s.thread.messages,
   ) as unknown as readonly MessageLike[];
@@ -212,7 +223,25 @@ export function WorkspacePanel() {
   const workspace = useMemo(() => getLatestArtifact(messages), [messages]);
   const smoothedWorkspace = useSmoothedWorkspace(workspace);
 
-  if (!smoothedWorkspace) {
+  const artifactIdentity = smoothedWorkspace
+    ? [
+        smoothedWorkspace.artifact.title,
+        smoothedWorkspace.artifact.language,
+        smoothedWorkspace.artifact.description,
+      ].join("::")
+    : null;
+
+  useEffect(() => {
+    if (artifactIdentity) {
+      setActiveTab("code");
+      setIsIframeLoaded(false);
+      setDismissedArtifactIdentity((current) =>
+        current === artifactIdentity ? current : null,
+      );
+    }
+  }, [artifactIdentity]);
+
+  if (!smoothedWorkspace || (artifactIdentity && dismissedArtifactIdentity === artifactIdentity)) {
     return null;
   }
 
@@ -220,6 +249,9 @@ export function WorkspacePanel() {
   const previewSource =
     artifact.previewHtml || (artifact.language === "html" ? artifact.code : "");
   const isolatedPreviewSource = buildPreviewDocument(previewSource);
+  const hasPreviewSource = Boolean(isolatedPreviewSource);
+  const showPreviewLoader =
+    activeTab === "preview" && (!hasPreviewSource || isStreaming || !isIframeLoaded);
   const codeSnippets = [
     {
       language: artifact.language,
@@ -230,7 +262,12 @@ export function WorkspacePanel() {
   ];
 
   return (
-    <aside className="flex min-h-0 min-w-0 flex-1 flex-col border-t border-black/6 bg-white lg:max-w-[48%] lg:border-t-0 lg:border-l">
+    <aside
+      className={cn(
+        "group/workspace flex min-h-0 min-w-0 flex-1 flex-col border-t border-black/8 bg-white lg:border-t lg:border-l",
+        isExpanded ? "w-full lg:max-w-none" : "lg:max-w-[48%]",
+      )}
+    >
       <div className="flex items-center justify-between border-b border-black/6 bg-white px-4 py-3">
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-black/35">
@@ -245,77 +282,123 @@ export function WorkspacePanel() {
             ) : null}
           </div>
         </div>
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "code" | "preview")}>
-          <TabsList>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 opacity-0 transition-opacity duration-150 group-hover/workspace:opacity-100">
+            <button
+              type="button"
+              aria-label={isExpanded ? "Shrink workspace" : "Expand workspace"}
+              className="flex h-8 w-8 items-center justify-center text-black/40 transition-colors hover:text-screamin-green-800"
+              onClick={() => onExpandedChange(!isExpanded)}
+            >
+              <Expand className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              aria-label="Close workspace"
+              className="flex h-8 w-8 items-center justify-center text-black/40 transition-colors hover:text-screamin-green-800"
+              onClick={() => {
+                onExpandedChange(false);
+                setDismissedArtifactIdentity(artifactIdentity);
+              }}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <Tabs
+            value={activeTab}
+            onValueChange={(value) => setActiveTab(value as "code" | "preview")}
+          >
+            <TabsList>
             <TabsTrigger value="code">Code</TabsTrigger>
             <TabsTrigger value="preview">Preview</TabsTrigger>
-          </TabsList>
-        </Tabs>
+            </TabsList>
+          </Tabs>
+        </div>
       </div>
 
-        <div className="min-h-0 flex-1 bg-white">
-          {activeTab === "code" ? (
-            <div className="flex h-full min-h-[22rem] flex-col overflow-hidden bg-white">
-              <CodeBlock data={codeSnippets} value={artifact.language} className="w-full">
-                <CodeBlockHeader>
-                  <CodeBlockFiles>
-                    {(item) => (
-                      <CodeBlockFilename key={item.language} value={item.language}>
-                        {item.filename}
-                      </CodeBlockFilename>
-                    )}
-                  </CodeBlockFiles>
-                  <CodeBlockCopyButton />
-                </CodeBlockHeader>
-                <ScrollArea className="w-full">
-                  {isStreaming ? (
-                    <pre className="max-h-[36rem] overflow-auto whitespace-pre-wrap break-words bg-white px-4 py-4 font-mono text-[13px] leading-6 text-black/82">
-                      <code>{artifact.code}</code>
-                    </pre>
-                  ) : (
-                    <CodeBlockBody>
-                      {(item) => (
-                        <CodeBlockItem
-                          key={item.language}
-                          value={item.language}
-                          className="max-h-[36rem] w-full"
-                        >
-                          <CodeBlockContent language={item.language as BundledLanguage}>
-                            {item.code}
-                          </CodeBlockContent>
-                        </CodeBlockItem>
-                      )}
-                    </CodeBlockBody>
+      <div className="min-h-0 flex-1 bg-white">
+        {activeTab === "code" ? (
+          <div className="flex h-full min-h-[22rem] flex-col overflow-hidden bg-white">
+            <CodeBlock
+              data={codeSnippets}
+              value={artifact.language}
+              className="h-full min-h-0 w-full"
+            >
+              <CodeBlockHeader>
+                <CodeBlockFiles>
+                  {(item) => (
+                    <CodeBlockFilename key={item.language} value={item.language}>
+                      {item.filename}
+                    </CodeBlockFilename>
                   )}
-                  <ScrollBar orientation="horizontal" />
-                </ScrollArea>
-              </CodeBlock>
-            </div>
-          ) : (
-            <div className="h-full min-h-[22rem] overflow-hidden bg-white">
-              <div className="border-b border-black/6 bg-[#fafafa] px-4 py-3">
-                <span className="text-xs font-medium uppercase tracking-[0.18em] text-black/38">
-                  Live Preview
-                </span>
-              </div>
-              {isolatedPreviewSource ? (
+                </CodeBlockFiles>
+                <CodeBlockCopyButton />
+              </CodeBlockHeader>
+              <ScrollArea className="min-h-0 flex-1 w-full">
+                {isStreaming ? (
+                  <pre className="min-h-full whitespace-pre-wrap break-words bg-white px-4 py-4 font-mono text-[13px] leading-6 text-black/82">
+                    <code>{artifact.code}</code>
+                  </pre>
+                ) : (
+                  <CodeBlockBody className="min-h-full">
+                    {(item) => (
+                      <CodeBlockItem
+                        key={item.language}
+                        value={item.language}
+                        className="w-full"
+                      >
+                        <CodeBlockContent language={item.language as BundledLanguage}>
+                          {item.code}
+                        </CodeBlockContent>
+                      </CodeBlockItem>
+                    )}
+                  </CodeBlockBody>
+                )}
+              </ScrollArea>
+            </CodeBlock>
+          </div>
+        ) : (
+          <div className="flex h-full min-h-[22rem] flex-col overflow-hidden bg-white">
+            {hasPreviewSource ? (
+              <div className="relative min-h-0 flex-1 bg-[#f7faf7] p-5">
+                {showPreviewLoader ? (
+                  <div className="absolute inset-0 z-10 flex min-h-0 flex-1 bg-[#f7faf7] p-5">
+                    <div className="flex min-h-0 flex-1 items-center justify-center rounded-sm bg-white p-6 shadow-[0_24px_60px_rgba(0,0,0,0.08)] ring-1 ring-black/5">
+                      <div className="flex flex-col items-center gap-4 text-center">
+                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-screamin-green-50 text-screamin-green-800 shadow-[0_12px_30px_rgba(0,0,0,0.08)]">
+                          <LoaderIcon className="h-6 w-6 animate-spin" />
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium text-black/70">
+                            Building preview
+                          </p>
+                          <p className="text-xs text-black/40">
+                            Rendering the generated interface in the canvas.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
                 <iframe
                   title={artifact.title}
                   srcDoc={isolatedPreviewSource}
-                  className="h-[calc(100%-49px)] w-full border-0 bg-white"
+                  className="relative z-0 min-h-0 flex-1 w-full border-0 bg-white"
                   sandbox="allow-scripts"
+                  onLoad={() => setIsIframeLoaded(true)}
                 />
-              ) : (
-                <div className="flex h-[calc(100%-49px)] items-center justify-center bg-white px-6 text-center">
-                  <p className="text-sm text-black/45">
-                    {isStreaming
-                      ? "Preview is being assembled."
-                      : "Preview is not available for this artifact."}
+              </div>
+            ) : (
+              <div className="flex min-h-0 flex-1 items-center justify-center bg-[#f7faf7] p-5">
+                <div className="w-full max-w-xl rounded-sm bg-white p-8 text-center shadow-[0_24px_60px_rgba(0,0,0,0.08)] ring-1 ring-black/5">
+                  <p className="text-sm text-black/40">
+                    {isStreaming ? "Preview is loading." : "Preview is not available for this artifact."}
                   </p>
                 </div>
-              )}
-            </div>
-          )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </aside>
   );
