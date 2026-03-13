@@ -276,6 +276,36 @@ const ToolFallbackImpl: ToolCallMessagePartComponent = ({
 }) => {
   const isCancelled =
     status?.type === "incomplete" && status.reason === "cancelled";
+  const isFrontendArtifactTool = toolName === "create_frontend_artifact";
+
+  if (isFrontendArtifactTool) {
+    const statusLabel =
+      status?.type === "running"
+        ? "Thinking"
+        : status?.type === "complete"
+          ? "Canvas updated"
+          : status?.type === "incomplete"
+            ? "Canvas failed"
+            : "Preparing canvas";
+
+    return (
+      <ToolFallbackRoot
+        defaultOpen={false}
+        className={cn(
+          "border-screamin-green-200 bg-screamin-green-50/50",
+          isCancelled && "border-muted-foreground/30 bg-muted/30",
+        )}
+      >
+        <ToolFallbackTrigger toolName={toolName} status={status} />
+        <ToolFallbackContent>
+          <div className="px-4 text-sm text-screamin-green-900/80">
+            {statusLabel}
+          </div>
+          <ToolFallbackError status={status} />
+        </ToolFallbackContent>
+      </ToolFallbackRoot>
+    );
+  }
 
   return (
     <ToolFallbackRoot
