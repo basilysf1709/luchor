@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, CreditCard, UserRound } from "lucide-react";
+import { Activity, Check, CreditCard, UserRound } from "lucide-react";
 import { FaDiscord, FaGithub } from "react-icons/fa";
 
 import { AppSidebar } from "@/components/app-sidebar";
@@ -16,8 +16,12 @@ import {
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { useUsage } from "@/hooks/use-usage";
 
 type Section = "account" | "billing";
+
+const COST_PER_PROMPT_TOKEN = 0.003 / 1000;   // $3 per 1M tokens
+const COST_PER_COMPLETION_TOKEN = 0.015 / 1000; // $15 per 1M tokens
 
 export default function AccountPage() {
   const [section, setSection] = useState<Section>("account");
@@ -29,6 +33,7 @@ export default function AccountPage() {
     process.env.NODE_ENV === "development";
   const authRequired = !isDevEnvironment;
   const { data: session, isPending, refetch } = authClient.useSession();
+  const { data: usage, isLoading: usageLoading } = useUsage(section === "billing");
 
   async function handleSignOut() {
     setSignOutError(null);
@@ -202,6 +207,53 @@ export default function AccountPage() {
               </section>
             ) : (
               <section className="space-y-4">
+                <div className="border border-screamin-green-200 bg-white p-5">
+                  <div className="mb-4 flex items-center gap-2">
+                    <Activity className="h-4 w-4 text-screamin-green-800" />
+                    <h2 className="text-lg font-semibold text-screamin-green-900">
+                      Usage This Month
+                    </h2>
+                  </div>
+                  {usageLoading ? (
+                    <p className="text-sm text-screamin-green-700">Loading usage data...</p>
+                  ) : usage ? (
+                    <div className="grid gap-4 md:grid-cols-3">
+                      <div className="space-y-1">
+                        <p className="text-xs uppercase tracking-wide text-screamin-green-700">
+                          Total Tokens
+                        </p>
+                        <p className="text-2xl font-bold text-screamin-green-900">
+                          {usage.totalTokens.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-screamin-green-600">
+                          {usage.promptTokens.toLocaleString()} prompt / {usage.completionTokens.toLocaleString()} completion
+                        </p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-xs uppercase tracking-wide text-screamin-green-700">
+                          Requests
+                        </p>
+                        <p className="text-2xl font-bold text-screamin-green-900">
+                          {usage.requestCount.toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-xs uppercase tracking-wide text-screamin-green-700">
+                          Estimated Cost
+                        </p>
+                        <p className="text-2xl font-bold text-screamin-green-900">
+                          ${(usage.promptTokens * COST_PER_PROMPT_TOKEN + usage.completionTokens * COST_PER_COMPLETION_TOKEN).toFixed(2)}
+                        </p>
+                        <p className="text-xs text-screamin-green-600">
+                          Based on $3/M input, $15/M output tokens
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-screamin-green-700">No usage data available.</p>
+                  )}
+                </div>
+
                 <div className="mb-2 flex items-center gap-2">
                   <CreditCard className="h-4 w-4 text-screamin-green-800" />
                   <h2 className="text-lg font-semibold text-screamin-green-900">

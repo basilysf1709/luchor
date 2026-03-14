@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import { drizzle } from 'drizzle-orm/node-postgres'
+import * as schema from './db/schema'
 
 function resolveDatabaseUrl() {
   const rawUrl = process.env.DATABASE_URL ?? process.env.PSCALE_CONNECTION_URI
@@ -27,6 +28,6 @@ if (!databaseUrl) {
   throw new Error("DATABASE_URL or PSCALE_CONNECTION_URI is required for DB connection.")
 }
 
-const db = drizzle(databaseUrl)
+const db = drizzle(databaseUrl, { schema })
 
 export default db
