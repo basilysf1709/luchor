@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AlignLeft } from "lucide-react";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   SidebarProvider,
@@ -75,7 +76,10 @@ export default function LibraryPage() {
           <SidebarTrigger />
         </header>
         <main className="flex-1 overflow-y-auto px-6 pb-12">
-          <h1 className="text-2xl font-bold mb-6">Gallery</h1>
+          <div className="flex items-center gap-3 mb-6">
+            <AlignLeft className="h-6 w-6" />
+            <h1 className="text-2xl font-bold">Library</h1>
+          </div>
 
           <div className="border-b border-gray-200 mb-8">
             <nav className="flex gap-6">

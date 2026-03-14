@@ -80,7 +80,7 @@ export default function AccountPage() {
   const userEmail = session?.user?.email ?? "";
 
   return (
-    <SidebarProvider defaultOpen={false} className="h-[100dvh] overflow-hidden">
+    <SidebarProvider className="h-[100dvh] overflow-hidden">
       <AppSidebar />
       <SidebarInset className="min-h-0 overflow-hidden">
         <header className="flex h-12 shrink-0 items-center justify-between px-4">

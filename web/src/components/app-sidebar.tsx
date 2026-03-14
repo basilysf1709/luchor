@@ -6,9 +6,12 @@ import {
   AlignLeft,
   CirclePlus,
   HardDrive,
+  Blocks,
+  Terminal,
+  Box,
+  Workflow,
   Plug,
   User,
-  PanelLeft,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -31,6 +34,10 @@ const mainNav = [
   { label: "Library", icon: AlignLeft, href: "/library" },
   { label: "Storage", icon: HardDrive, href: "/storage" },
   { label: "MCP Servers", icon: Plug, href: "/mcp" },
+  { label: "Automations", icon: Workflow, href: "/automations" },
+  { label: "Skills", icon: Blocks, href: "/skills" },
+  { label: "Tools", icon: Box, href: "/tools" },
+  { label: "CLI", icon: Terminal, href: "/cli" },
 ];
 
 const bottomNav = [
@@ -39,16 +46,6 @@ const bottomNav = [
   // { label: "Upgrade", icon: ArrowUpRight },
   // { label: "Install", icon: Download },
 ];
-
-function SidebarToggle() {
-  const { toggleSidebar } = useSidebar();
-  return (
-    <SidebarMenuButton onClick={toggleSidebar} tooltip="Toggle sidebar">
-      <PanelLeft />
-      <span>Collapse</span>
-    </SidebarMenuButton>
-  );
-}
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   activeSessionId?: string | null;
@@ -65,6 +62,12 @@ export function AppSidebar({
   ...props
 }: AppSidebarProps) {
   const pathname = usePathname();
+  const { setOpen } = useSidebar();
+
+  const handleNewAgent = () => {
+    setOpen(false);
+    onNewAgent?.();
+  };
 
   const isActiveRoute = (href: string) => {
     if (href === "/") {
@@ -96,7 +99,7 @@ export function AppSidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={onNewAgent} tooltip="New Agent">
+                <SidebarMenuButton onClick={handleNewAgent} tooltip="New Agent">
                   <CirclePlus />
                   <span>New Agent</span>
                 </SidebarMenuButton>
@@ -140,9 +143,6 @@ export function AppSidebar({
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
-          <SidebarMenuItem>
-            <SidebarToggle />
-          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
       <SidebarRail />

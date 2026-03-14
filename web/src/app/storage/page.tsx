@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronDown, Plus, Search } from "lucide-react";
+import { ChevronDown, HardDrive, Plus, Search } from "lucide-react";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   SidebarProvider,
@@ -44,7 +44,10 @@ export default function StoragePage() {
           <SidebarTrigger />
         </header>
         <main className="flex-1 overflow-y-auto px-6 pb-12">
-          <h1 className="text-2xl font-bold mb-6">Storage</h1>
+          <div className="flex items-center gap-3 mb-6">
+            <HardDrive className="h-6 w-6" />
+            <h1 className="text-2xl font-bold">Storage</h1>
+          </div>
 
           <div className="flex items-center gap-4 mb-8">
             {/* Source dropdown */}
@@ -115,7 +118,7 @@ export default function StoragePage() {
               className="mt-6 flex items-center gap-2 rounded-lg bg-screamin-green-800 px-6 py-3 text-sm font-medium text-white hover:bg-screamin-green-700"
             >
               <Plus className="h-4 w-4" />
-              New Task
+              Upload
             </button>
           </div>
         </main>

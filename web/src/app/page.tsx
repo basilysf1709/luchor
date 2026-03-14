@@ -124,7 +124,7 @@ function HomeContent() {
   }
 
   return (
-    <SidebarProvider defaultOpen={false} className="h-[100dvh] overflow-hidden">
+    <SidebarProvider className="h-[100dvh] overflow-hidden">
       <AppSidebar
         activeSessionId={activeSessionId}
         onDeleteSession={handleDeleteSession}

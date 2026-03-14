@@ -74,7 +74,7 @@ function TaskItem({
     >
       <button
         type="button"
-        className="flex min-w-0 flex-1 items-center gap-2 px-3 py-2 text-left"
+        className="flex min-w-0 flex-1 items-center gap-2 px-4 py-2 text-left"
         onClick={() => onSelect?.(task.id)}
       >
         <span
@@ -92,7 +92,7 @@ function TaskItem({
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            className="ml-1 shrink-0 rounded p-0.5 opacity-0 hover:bg-sidebar-accent group-hover/task:opacity-100"
+            className="mr-2 ml-1 shrink-0 rounded p-0.5 opacity-0 hover:bg-sidebar-accent group-hover/task:opacity-100"
             onClick={(e) => e.stopPropagation()}
           >
             <Ellipsis className="h-4 w-4" />
