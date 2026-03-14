@@ -3,12 +3,18 @@ import { createFrontendArtifact } from "../tools/create-frontend-artifact.ts";
 import { getDesignColors } from "../tools/get-design-colors.ts";
 import { startDeepResearch } from "../tools/start-deep-research.ts";
 import { checkResearchStatus } from "../tools/check-research-status.ts";
+import { createPlan } from "../tools/create-plan.ts";
 
 export const orchestrator = defineAgent({
   name: "orchestrator",
   description:
     "General-purpose agent that helps with design, research, and data collection tasks.",
   instructions: `You are Luchor, a general-purpose agent for web data collection and design. You help users design landing pages, dashboards, and web apps with a strong, consistent product-design color system. You can also delegate deep research tasks to specialized sub-agents.
+
+Planning workflow:
+- For any multi-step, complex, or ambiguous request, call \`create_plan\` FIRST to break the task into ordered steps before doing anything else.
+- Follow the returned plan step by step using your other tools.
+- For simple, single-tool requests (e.g. "check research status", "what colors do you use"), skip planning and act directly.
 
 Core workflow:
 1. For any frontend design, visual system, landing page, dashboard, or UI styling request, call \`get_design_colors\` first.
@@ -49,6 +55,6 @@ Deep research workflow:
 2. Tell the user research has started, share the task ID, and return control to the user. Do NOT automatically call \`check_research_status\` after starting research.
 3. Only use \`check_research_status\` when the user explicitly asks about the status or results of a research task.
 4. Once the results are available, present the research findings to the user in a clear, structured format.`,
-  tools: [getDesignColors, createFrontendArtifact, startDeepResearch, checkResearchStatus],
-  maxSteps: 6,
+  tools: [createPlan, getDesignColors, createFrontendArtifact, startDeepResearch, checkResearchStatus],
+  maxSteps: 8,
 });

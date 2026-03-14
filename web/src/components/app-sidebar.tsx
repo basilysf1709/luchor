@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   AlignLeft,
+  CirclePlus,
   User,
   PanelLeft,
 } from "lucide-react";
@@ -22,13 +23,10 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { TaskHistory } from "@/components/task-history";
 
 const mainNav = [
-  { label: "Library", icon: AlignLeft, href: "/" },
-  // { label: "Discover", icon: Compass },
-  // { label: "Spaces", icon: Monitor },
-  // { label: "Finance", icon: TrendingUp },
-  // { label: "More", icon: MoreHorizontal },
+  { label: "Library", icon: AlignLeft, href: "/library" },
 ];
 
 const bottomNav = [
@@ -48,7 +46,20 @@ function SidebarToggle() {
   );
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  activeSessionId?: string | null;
+  onDeleteSession?: (id: string) => void;
+  onNewAgent?: () => void;
+  onSelectSession?: (id: string) => void;
+};
+
+export function AppSidebar({
+  activeSessionId,
+  onDeleteSession,
+  onNewAgent,
+  onSelectSession,
+  ...props
+}: AppSidebarProps) {
   const pathname = usePathname();
 
   const isActiveRoute = (href: string) => {
@@ -80,6 +91,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={onNewAgent} tooltip="New Agent">
+                  <CirclePlus />
+                  <span>New Agent</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               {mainNav.map((item) => (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton
@@ -97,6 +114,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <TaskHistory
+          activeSessionId={activeSessionId}
+          onDeleteSession={onDeleteSession}
+          onSelectSession={onSelectSession}
+        />
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>

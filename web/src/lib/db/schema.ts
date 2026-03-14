@@ -1,4 +1,19 @@
-import { pgTable, text, integer, timestamp, uuid, index } from "drizzle-orm/pg-core";
+import { pgTable, text, integer, timestamp, uuid, index, jsonb } from "drizzle-orm/pg-core";
+
+export const sessionHistory = pgTable("session_history", {
+  id: text("id").primaryKey(),
+  userId: text("userId").notNull(),
+  title: text("title"),
+  query: text("query").notNull(),
+  status: text("status").notNull().default("running"),
+  createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull(),
+  completedAt: timestamp("completedAt", { withTimezone: true }),
+  messages: jsonb("messages").default([]),
+  updatedAt: timestamp("updatedAt", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  index("session_history_userId_idx").on(table.userId),
+  index("session_history_createdAt_idx").on(table.createdAt),
+]);
 
 export const tokenUsage = pgTable("token_usage", {
   id: uuid("id").defaultRandom().primaryKey(),

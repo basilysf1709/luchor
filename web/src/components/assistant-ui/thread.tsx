@@ -43,7 +43,9 @@ import {
 } from "lucide-react";
 import type { FC } from "react";
 
-export const Thread: FC = () => {
+export const Thread: FC<{ onStartNewSession?: () => void }> = ({
+  onStartNewSession,
+}) => {
   return (
     <ThreadPrimitive.Root
       className="aui-root aui-thread-root @container relative flex h-full min-h-0 flex-col bg-background"
@@ -59,7 +61,7 @@ export const Thread: FC = () => {
         <AuiIf condition={(s) => s.thread.isEmpty}>
           <div className="mx-auto my-auto w-full max-w-(--thread-max-width)">
             <div className="flex flex-col gap-3">
-              <Composer />
+              <Composer onStartNewSession={onStartNewSession} />
               <WelcomeSuggestions />
             </div>
           </div>
@@ -79,7 +81,7 @@ export const Thread: FC = () => {
         <div className="aui-thread-footer relative z-20 bg-background px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 md:pb-[max(1.5rem,env(safe-area-inset-bottom))]">
           <div className="mx-auto flex w-full max-w-(--thread-max-width) flex-col gap-4">
             <ThreadScrollToBottom />
-            <Composer />
+            <Composer onStartNewSession={onStartNewSession} />
           </div>
         </div>
       </AuiIf>
@@ -128,7 +130,9 @@ const ThreadScrollToBottom: FC = () => {
   );
 };
 
-const Composer: FC = () => {
+const Composer: FC<{ onStartNewSession?: () => void }> = ({
+  onStartNewSession,
+}) => {
   const runtime = useAssistantRuntime();
 
   return (
@@ -148,7 +152,14 @@ const Composer: FC = () => {
                 type="button"
                 aria-label="Clear conversation"
                 className="flex h-8 w-8 items-center justify-center border border-screamin-green-200 text-screamin-green-700/40 hover:text-screamin-green-800"
-                onClick={() => runtime.thread.reset()}
+                onClick={() => {
+                  if (onStartNewSession) {
+                    onStartNewSession();
+                    return;
+                  }
+
+                  runtime.thread.reset();
+                }}
               >
                 <Trash2 size={16} strokeWidth={1.5} />
               </button>

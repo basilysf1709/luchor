@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, startTransition, useCallback, useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { AuthCard } from "@/components/auth-card";
@@ -14,7 +15,10 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-export default function Home() {
+function HomeContent() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const isDevEnvironment =
     process.env.NEXT_PUBLIC_ENV === "dev" ||
     process.env.NODE_ENV === "development";
@@ -22,6 +26,60 @@ export default function Home() {
   const { data: session, isPending, refetch } = authClient.useSession();
   const [signOutError, setSignOutError] = useState<string | null>(null);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+
+  const navigateToSession = useCallback(
+    (sessionId: string, history: "push" | "replace" = "push") => {
+      setActiveSessionId((current) => (current === sessionId ? current : sessionId));
+
+      const nextParams = new URLSearchParams(searchParams.toString());
+      nextParams.set("session", sessionId);
+      const nextUrl = `${pathname}?${nextParams.toString()}`;
+
+      startTransition(() => {
+        if (history === "replace") {
+          router.replace(nextUrl, { scroll: false });
+          return;
+        }
+
+        router.push(nextUrl, { scroll: false });
+      });
+    },
+    [pathname, router, searchParams],
+  );
+
+  useEffect(() => {
+    const sessionIdFromUrl = searchParams.get("session");
+
+    if (sessionIdFromUrl) {
+      setActiveSessionId((current) =>
+        current === sessionIdFromUrl ? current : sessionIdFromUrl,
+      );
+      return;
+    }
+
+    const nextSessionId = crypto.randomUUID();
+    navigateToSession(nextSessionId, "replace");
+  }, [navigateToSession, searchParams]);
+
+  const handleNewAgent = useCallback(() => {
+    navigateToSession(crypto.randomUUID());
+  }, [navigateToSession]);
+
+  const handleSelectSession = useCallback((sessionId: string) => {
+    navigateToSession(sessionId);
+  }, [navigateToSession]);
+
+  const handleDeleteSession = useCallback(
+    (sessionId: string) => {
+      if (sessionId !== activeSessionId) {
+        return;
+      }
+
+      navigateToSession(crypto.randomUUID(), "replace");
+    },
+    [activeSessionId, navigateToSession],
+  );
 
   async function handleSignOut() {
     setSignOutError(null);
@@ -67,7 +125,12 @@ export default function Home() {
 
   return (
     <SidebarProvider defaultOpen={false} className="h-[100dvh] overflow-hidden">
-      <AppSidebar />
+      <AppSidebar
+        activeSessionId={activeSessionId}
+        onDeleteSession={handleDeleteSession}
+        onNewAgent={handleNewAgent}
+        onSelectSession={handleSelectSession}
+      />
       <SidebarInset className="min-h-0 overflow-hidden">
         <header className="flex h-12 shrink-0 items-center justify-between px-4">
           <SidebarTrigger />
@@ -103,9 +166,23 @@ export default function Home() {
           <p className="px-4 text-sm text-red-600">{signOutError}</p>
         ) : null}
         <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
-          <ChatPage />
+          {activeSessionId ? (
+            <ChatPage
+              key={activeSessionId}
+              onStartNewSession={handleNewAgent}
+              sessionId={activeSessionId}
+            />
+          ) : null}
         </main>
       </SidebarInset>
     </SidebarProvider>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-screamin-green-50" />}>
+      <HomeContent />
+    </Suspense>
   );
 }
