@@ -140,11 +140,25 @@ export function TaskHistory({
   const { tasks, renameTask, deleteTask } = useTaskHistory();
   const { open } = useSidebar();
 
+  const [isOpen, setIsOpen] = useState(() => {
+    try {
+      const stored = localStorage.getItem("task-history-open");
+      return stored === null ? true : stored === "true";
+    } catch {
+      return true;
+    }
+  });
+
+  const handleOpenChange = (value: boolean) => {
+    setIsOpen(value);
+    try { localStorage.setItem("task-history-open", String(value)); } catch {}
+  };
+
   if (tasks.length === 0 || !open) return null;
 
   return (
     <SidebarGroup>
-      <Collapsible defaultOpen>
+      <Collapsible open={isOpen} onOpenChange={handleOpenChange}>
         <CollapsibleTrigger asChild>
           <SidebarGroupLabel className="cursor-pointer">
             Task History

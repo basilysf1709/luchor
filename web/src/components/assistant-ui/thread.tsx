@@ -22,6 +22,7 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
   CheckIcon,
+  ChevronDown,
   ChevronLeftIcon,
   ChevronRightIcon,
   CopyIcon,
@@ -41,7 +42,7 @@ import {
   Trash2,
   Video,
 } from "lucide-react";
-import type { FC } from "react";
+import { type FC, useRef, useState, useEffect } from "react";
 
 export const Thread: FC<{ onStartNewSession?: () => void }> = ({
   onStartNewSession,
@@ -145,7 +146,8 @@ const Composer: FC<{ onStartNewSession?: () => void }> = ({
           autoFocus
           aria-label="Message input"
         />
-        <div className="flex items-center justify-end">
+        <div className="flex items-center justify-between">
+          <ModelSelector />
           <div className="flex items-center gap-2">
             <AuiIf condition={(s) => !s.thread.isEmpty}>
               <button
@@ -200,6 +202,64 @@ const Composer: FC<{ onStartNewSession?: () => void }> = ({
         </div>
       </div>
     </ComposerPrimitive.Root>
+  );
+};
+
+const models = [
+  { label: "Auto", value: "auto" },
+  { label: "Opus 4.6", value: "claude-4.6-opus" },
+  { label: "Sonnet 4.6", value: "claude-4.6-sonnet" },
+  { label: "Sonnet 4.5", value: "claude-4.5-sonnet" },
+  { label: "Haiku 4.5", value: "claude-4.5-haiku" },
+];
+
+const ModelSelector: FC = () => {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState(models[0]);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex h-8 w-[5.75rem] items-center justify-between rounded border border-screamin-green-200 px-2 text-xs font-medium text-screamin-green-700/60 hover:text-screamin-green-800 hover:bg-screamin-green-100/50"
+      >
+        <span className="truncate">{selected.label}</span>
+        <ChevronDown className="h-3 w-3 shrink-0" />
+      </button>
+      {open && (
+        <div className="absolute bottom-full left-0 mb-1 w-44 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+          {models.map((model) => (
+            <button
+              key={model.value}
+              type="button"
+              onClick={() => {
+                setSelected(model);
+                setOpen(false);
+              }}
+              className={`block w-full px-3 py-1.5 text-left text-xs ${
+                selected.value === model.value
+                  ? "bg-screamin-green-50 font-medium text-screamin-green-800"
+                  : "text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              {model.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 

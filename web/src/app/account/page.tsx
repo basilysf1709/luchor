@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Activity, Check, CreditCard, UserRound } from "lucide-react";
 import { FaDiscord, FaGithub } from "react-icons/fa";
 
@@ -78,10 +79,26 @@ export default function AccountPage() {
 
   const userName = session?.user?.name ?? "";
   const userEmail = session?.user?.email ?? "";
+  const router = useRouter();
+
+  const handleNewAgent = useCallback(() => {
+    const sessionId = crypto.randomUUID();
+    router.push(`/?session=${sessionId}`);
+  }, [router]);
+
+  const handleSelectSession = useCallback(
+    (sessionId: string) => {
+      router.push(`/?session=${sessionId}`);
+    },
+    [router],
+  );
 
   return (
     <SidebarProvider className="h-[100dvh] overflow-hidden">
-      <AppSidebar />
+      <AppSidebar
+        onNewAgent={handleNewAgent}
+        onSelectSession={handleSelectSession}
+      />
       <SidebarInset className="min-h-0 overflow-hidden">
         <header className="flex h-12 shrink-0 items-center justify-between px-4">
           <SidebarTrigger />
