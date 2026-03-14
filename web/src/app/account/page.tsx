@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { CreditCard, UserRound } from "lucide-react";
+import { Check, CreditCard, UserRound } from "lucide-react";
 import { FaDiscord, FaGithub } from "react-icons/fa";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { AuthCard } from "@/components/auth-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
@@ -201,41 +202,145 @@ export default function AccountPage() {
               </section>
             ) : (
               <section className="space-y-4">
-                <div className="border border-screamin-green-200 bg-white p-5">
-                  <div className="mb-4 flex items-center gap-2">
-                    <CreditCard className="h-4 w-4 text-screamin-green-800" />
-                    <h2 className="text-lg font-semibold text-screamin-green-900">
-                      Plan & Usage
-                    </h2>
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div className="border border-screamin-green-200 bg-screamin-green-50 p-4">
-                      <p className="text-xs uppercase tracking-wide text-screamin-green-700">
+                <div className="mb-2 flex items-center gap-2">
+                  <CreditCard className="h-4 w-4 text-screamin-green-800" />
+                  <h2 className="text-lg font-semibold text-screamin-green-900">
+                    Choose Your Plan
+                  </h2>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-3">
+                  {/* Starter */}
+                  <div className="flex flex-col border border-screamin-green-200 bg-white p-5">
+                    <p className="text-xs uppercase tracking-wide text-screamin-green-700">
+                      Starter
+                    </p>
+                    <div className="mt-2 flex items-baseline gap-1">
+                      <span className="text-3xl font-bold text-screamin-green-900">$0</span>
+                      <span className="text-sm text-screamin-green-700">/month</span>
+                    </div>
+                    <p className="mt-2 text-sm text-screamin-green-800">
+                      Get started with basic agent workflows and data collection.
+                    </p>
+                    <Separator className="my-4 bg-screamin-green-200" />
+                    <ul className="flex-1 space-y-2 text-sm text-screamin-green-900">
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        100 agent runs / month
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        1 concurrent agent
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        Community support
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        Basic data export
+                      </li>
+                    </ul>
+                    <div className="mt-5">
+                      <Button
+                        variant="outline"
+                        className="w-full border-screamin-green-200 hover:bg-screamin-green-50"
+                        disabled
+                      >
                         Current Plan
-                      </p>
-                      <p className="mt-1 text-xl font-bold text-screamin-green-900">
-                        Starter
-                      </p>
-                      <p className="mt-1 text-sm text-screamin-green-800">
-                        Good for getting started with agent workflows.
-                      </p>
-                    </div>
-                    <div className="border border-screamin-green-200 bg-screamin-green-50 p-4">
-                      <p className="text-xs uppercase tracking-wide text-screamin-green-700">
-                        Next Invoice
-                      </p>
-                      <p className="mt-1 text-xl font-bold text-screamin-green-900">
-                        $0.00
-                      </p>
-                      <p className="mt-1 text-sm text-screamin-green-800">
-                        You are currently on a no-cost plan.
-                      </p>
+                      </Button>
                     </div>
                   </div>
-                  <div className="mt-4">
-                    <Button className="bg-screamin-green-800 text-white hover:bg-screamin-green-700">
-                      Manage Plan
-                    </Button>
+
+                  {/* Pro */}
+                  <div className="relative flex flex-col border-2 border-screamin-green-800 bg-white p-5">
+                    <span className="absolute -top-3 left-4 bg-screamin-green-800 px-2 py-0.5 text-xs font-medium text-white">
+                      Popular
+                    </span>
+                    <p className="text-xs uppercase tracking-wide text-screamin-green-700">
+                      Pro
+                    </p>
+                    <div className="mt-2 flex items-baseline gap-1">
+                      <span className="text-3xl font-bold text-screamin-green-900">$29</span>
+                      <span className="text-sm text-screamin-green-700">/month</span>
+                    </div>
+                    <p className="mt-2 text-sm text-screamin-green-800">
+                      For teams scaling their data collection pipelines.
+                    </p>
+                    <Separator className="my-4 bg-screamin-green-200" />
+                    <ul className="flex-1 space-y-2 text-sm text-screamin-green-900">
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        5,000 agent runs / month
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        10 concurrent agents
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        Priority support
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        Advanced data export & API access
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        Custom agent templates
+                      </li>
+                    </ul>
+                    <div className="mt-5">
+                      <Button className="w-full bg-screamin-green-800 text-white hover:bg-screamin-green-700">
+                        Upgrade to Pro
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Enterprise */}
+                  <div className="flex flex-col border border-screamin-green-200 bg-white p-5">
+                    <p className="text-xs uppercase tracking-wide text-screamin-green-700">
+                      Enterprise
+                    </p>
+                    <div className="mt-2 flex items-baseline gap-1">
+                      <span className="text-3xl font-bold text-screamin-green-900">$99</span>
+                      <span className="text-sm text-screamin-green-700">/month</span>
+                    </div>
+                    <p className="mt-2 text-sm text-screamin-green-800">
+                      Unlimited power for large-scale operations.
+                    </p>
+                    <Separator className="my-4 bg-screamin-green-200" />
+                    <ul className="flex-1 space-y-2 text-sm text-screamin-green-900">
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        Unlimited agent runs
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        Unlimited concurrent agents
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        Dedicated support & SLA
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        SSO & team management
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        Custom integrations & webhooks
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-screamin-green-800" />
+                        Audit logs & compliance
+                      </li>
+                    </ul>
+                    <div className="mt-5">
+                      <Button className="w-full bg-screamin-green-800 text-white hover:bg-screamin-green-700">
+                        Upgrade to Enterprise
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
