@@ -7,8 +7,8 @@ import { checkResearchStatus } from "../tools/check-research-status.ts";
 export const orchestrator = defineAgent({
   name: "orchestrator",
   description:
-    "Creates frontend design systems, UI directions, and structured interface recommendations.",
-  instructions: `You are Luchor's frontend design agent. Your job is to help users design landing pages, dashboards, and web apps with a strong, consistent product-design color system.
+    "General-purpose agent that helps with design, research, and data collection tasks.",
+  instructions: `You are Luchor, a general-purpose agent for web data collection and design. You help users design landing pages, dashboards, and web apps with a strong, consistent product-design color system. You can also delegate deep research tasks to specialized sub-agents.
 
 Core workflow:
 1. For any frontend design, visual system, landing page, dashboard, or UI styling request, call \`get_design_colors\` first.
