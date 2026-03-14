@@ -26,7 +26,7 @@ import {
 import { TaskHistory } from "@/components/task-history";
 
 const mainNav = [
-  { label: "Library", icon: AlignLeft, href: "/library" },
+  { label: "Library", icon: AlignLeft, href: "/" },
 ];
 
 const bottomNav = [

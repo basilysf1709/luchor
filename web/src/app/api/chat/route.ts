@@ -110,9 +110,13 @@ export async function POST(req: Request) {
   if (apiKey) {
     upstreamHeaders.set("authorization", `Bearer ${apiKey}`);
   }
-  if (userId) {
-    const agentToken = await createAgentToken(userId);
-    upstreamHeaders.set("x-agent-token", agentToken);
+  if (userId && process.env.AGENT_AUTH_SECRET) {
+    try {
+      const agentToken = await createAgentToken(userId);
+      upstreamHeaders.set("x-agent-token", agentToken);
+    } catch (err) {
+      console.error("[api/chat] Failed to create agent token:", err);
+    }
   }
 
   try {
