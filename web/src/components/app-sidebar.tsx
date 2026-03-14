@@ -65,7 +65,6 @@ export function AppSidebar({
   const { setOpen } = useSidebar();
 
   const handleNewAgent = () => {
-    setOpen(false);
     onNewAgent?.();
   };
 
