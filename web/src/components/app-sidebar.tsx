@@ -6,6 +6,7 @@ import {
   AlignLeft,
   CirclePlus,
   HardDrive,
+  Plug,
   User,
   PanelLeft,
 } from "lucide-react";
@@ -29,6 +30,7 @@ import { TaskHistory } from "@/components/task-history";
 const mainNav = [
   { label: "Library", icon: AlignLeft, href: "/library" },
   { label: "Storage", icon: HardDrive, href: "/storage" },
+  { label: "MCP Servers", icon: Plug, href: "/mcp" },
 ];
 
 const bottomNav = [

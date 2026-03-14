@@ -11,6 +11,7 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarGroupContent,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -137,8 +138,9 @@ export function TaskHistory({
   onSelectSession,
 }: TaskHistoryProps) {
   const { tasks, renameTask, deleteTask } = useTaskHistory();
+  const { open } = useSidebar();
 
-  if (tasks.length === 0) return null;
+  if (tasks.length === 0 || !open) return null;
 
   return (
     <SidebarGroup>
