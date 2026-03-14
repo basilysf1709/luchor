@@ -9,7 +9,7 @@
 <p align="center"><b>General Purpose Agent</b></p>
 
 <p align="center">
-A multi-agent system for web data collection powered by AI. Declarative agent DSL, handoff orchestration, async deep research, and a real-time streaming chat interface.<br/>
+A multi-agent system for general purpose on the web  Declarative agent DSL, handoff orchestration, async deep research, and a real-time streaming chat interface.<br/>
 One platform. Multiple agents. Structured output.
 </p>
 
