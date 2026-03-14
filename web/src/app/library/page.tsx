@@ -65,7 +65,7 @@ export default function LibraryPage() {
   );
 
   return (
-    <SidebarProvider defaultOpen={false} className="h-[100dvh] overflow-hidden">
+    <SidebarProvider className="h-[100dvh] overflow-hidden">
       <AppSidebar
         onNewAgent={handleNewAgent}
         onSelectSession={handleSelectSession}

@@ -34,7 +34,7 @@ export default function StoragePage() {
   );
 
   return (
-    <SidebarProvider defaultOpen={false} className="h-[100dvh] overflow-hidden">
+    <SidebarProvider className="h-[100dvh] overflow-hidden">
       <AppSidebar
         onNewAgent={handleNewAgent}
         onSelectSession={handleSelectSession}
@@ -44,14 +44,14 @@ export default function StoragePage() {
           <SidebarTrigger />
         </header>
         <main className="flex-1 overflow-y-auto px-6 pb-12">
-          <h1 className="text-2xl font-bold mb-6">Assets</h1>
+          <h1 className="text-2xl font-bold mb-6">Storage</h1>
 
           <div className="flex items-center gap-4 mb-8">
             {/* Source dropdown */}
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setSourceOpen(!sourceOpen)}
-                className="flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50"
+                className="flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50"
               >
                 {activeSource}
                 <ChevronDown className="h-4 w-4" />
