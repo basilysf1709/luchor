@@ -233,7 +233,7 @@ const ModelSelector: FC = () => {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex h-8 w-[5.75rem] items-center justify-between rounded border border-screamin-green-200 px-2 text-xs font-medium text-screamin-green-700/60 hover:text-screamin-green-800 hover:bg-screamin-green-100/50"
+        className="flex h-8 w-[5.75rem] items-center justify-between rounded border border-screamin-green-400 px-2 text-xs font-medium text-screamin-green-700/60 hover:text-screamin-green-800 hover:bg-screamin-green-100/50"
       >
         <span className="truncate">{selected.label}</span>
         <ChevronDown className="h-3 w-3 shrink-0" />
