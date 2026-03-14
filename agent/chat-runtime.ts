@@ -7,15 +7,13 @@ import {
   type UIMessage,
 } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
-import { orchestrator } from "./agents/index.ts";
 import {
-  buildAgentRegistry,
   buildSystemPrompt,
   extractConversationState,
 } from "./runtime/index.ts";
 import { resolveTools } from "./runtime/resolve-tools.ts";
-
-const registry = buildAgentRegistry(orchestrator);
+import { resolveCapabilities } from "./capabilities/index.ts";
+import type { AgentContext, CapabilityDefinition } from "./types.ts";
 
 function getHandoffTarget(output: unknown): string | null {
   if (typeof output !== "object" || output === null) return null;
@@ -24,20 +22,38 @@ function getHandoffTarget(output: unknown): string | null {
   return typeof parsed.targetAgent === "string" ? parsed.targetAgent : null;
 }
 
-export async function createAgentChatResponse(messages: UIMessage[]) {
-  const { activeAgent: activeAgentName } = extractConversationState(
-    messages,
-    orchestrator.name,
-  );
-  const activeAgent = registry.get(activeAgentName) ?? orchestrator;
-  const tools = resolveTools(activeAgent);
+type CreateAgentChatResponseOptions = {
+  messages: UIMessage[];
+  context: AgentContext;
+  additionalCapabilities?: CapabilityDefinition[];
+};
+
+export async function createAgentChatResponse({
+  messages,
+  context,
+  additionalCapabilities,
+}: CreateAgentChatResponseOptions) {
+  const conversationState = extractConversationState(messages, "orchestrator");
+  const resolvedCapabilities = await resolveCapabilities({
+    context,
+    activeAgentName: conversationState.activeAgent,
+    additionalCapabilities,
+  });
+  const activeAgent = resolvedCapabilities.activeAgent;
+  const tools = resolveTools(activeAgent, resolvedCapabilities);
   const systemPrompt = buildSystemPrompt(activeAgent);
 
   const stream = createUIMessageStream({
     execute: async ({ writer }) => {
       writer.write({
         type: "message-metadata",
-        messageMetadata: { agentName: activeAgent.name },
+        messageMetadata: {
+          agentName: activeAgent.name,
+          capabilitySnapshot: resolvedCapabilities.snapshot,
+          activeCapabilityIds: resolvedCapabilities.snapshot.items.map(
+            (item) => item.id,
+          ),
+        },
       });
 
       const result = streamText({
@@ -55,6 +71,10 @@ export async function createAgentChatResponse(messages: UIMessage[]) {
               messageMetadata: {
                 agentName: handoffTarget,
                 handoffTarget,
+                capabilitySnapshot: resolvedCapabilities.snapshot,
+                activeCapabilityIds: resolvedCapabilities.snapshot.items.map(
+                  (item) => item.id,
+                ),
               },
             });
           }

@@ -1,8 +1,11 @@
 import type { ToolSet } from "ai";
-import type { AgentDefinition } from "../types.ts";
+import type { AgentDefinition, ResolvedCapabilityConfig } from "../types.ts";
 import { z } from "zod";
 
-export function resolveTools(agent: AgentDefinition): ToolSet {
+export function resolveTools(
+  agent: AgentDefinition,
+  resolvedCapabilities?: ResolvedCapabilityConfig,
+): ToolSet {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tools: Record<string, any> = {};
 
@@ -12,7 +15,14 @@ export function resolveTools(agent: AgentDefinition): ToolSet {
       tools[t.name] = {
         description: t.description,
         inputSchema: t.parameters,
-        execute: t.execute,
+        execute: async (args: unknown) =>
+          t.execute(args as never, resolvedCapabilities
+            ? {
+                agentContext: resolvedCapabilities.context,
+                activeAgent: agent,
+                resolvedCapabilities,
+              }
+            : undefined),
       };
     }
   }

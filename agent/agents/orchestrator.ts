@@ -1,9 +1,4 @@
 import { defineAgent } from "../define-agent.ts";
-import { createFrontendArtifact } from "../tools/create-frontend-artifact.ts";
-import { getDesignColors } from "../tools/get-design-colors.ts";
-import { startDeepResearch } from "../tools/start-deep-research.ts";
-import { checkResearchStatus } from "../tools/check-research-status.ts";
-import { createPlan } from "../tools/create-plan.ts";
 
 export const orchestrator = defineAgent({
   name: "orchestrator",
@@ -55,6 +50,5 @@ Deep research workflow:
 2. Tell the user research has started, share the task ID, and return control to the user. Do NOT automatically call \`check_research_status\` after starting research.
 3. Only use \`check_research_status\` when the user explicitly asks about the status or results of a research task.
 4. Once the results are available, present the research findings to the user in a clear, structured format.`,
-  tools: [createPlan, getDesignColors, createFrontendArtifact, startDeepResearch, checkResearchStatus],
   maxSteps: 8,
 });

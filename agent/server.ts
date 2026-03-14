@@ -3,11 +3,26 @@ import { createServer, type IncomingMessage } from "node:http";
 import { Readable } from "node:stream";
 import type { UIMessage } from "ai";
 import { createAgentChatResponse } from "./chat-runtime.ts";
+import { createAgentContext, verifyAgentToken } from "./request-context.ts";
 import { getTask, listTasks } from "./task-store.ts";
 
 const host = process.env.HOST ?? "0.0.0.0";
 const port = Number(process.env.PORT ?? "8787");
 const agentServiceApiKey = process.env.AGENT_SERVICE_API_KEY;
+
+type ChatRequestBody = {
+  messages?: unknown;
+  sessionId?: unknown;
+  context?: {
+    workspaceId?: unknown;
+    sessionId?: unknown;
+    taskType?: unknown;
+    featureFlags?: unknown;
+    authScopes?: unknown;
+    attachedCapabilityIds?: unknown;
+    metadata?: unknown;
+  } | null;
+};
 
 function jsonResponse(
   status: number,
@@ -25,6 +40,10 @@ async function readBody(req: IncomingMessage): Promise<string> {
     data += chunk;
   }
   return data;
+}
+
+function asString(value: unknown): string | null {
+  return typeof value === "string" && value.trim() ? value : null;
 }
 
 const server = createServer(async (req, res) => {
@@ -97,9 +116,58 @@ const server = createServer(async (req, res) => {
   }
 
   try {
-    const upstreamResponse = await createAgentChatResponse(
-      maybeMessages as UIMessage[],
+    const requestBody = body as ChatRequestBody;
+    const agentToken = asString(req.headers["x-agent-token"]);
+    let userId: string | null = null;
+
+    if (agentToken) {
+      try {
+        userId = await verifyAgentToken(agentToken);
+      } catch {
+        return jsonResponse(401, { error: "Invalid agent token" }, res);
+      }
+    }
+
+    const context = createAgentContext(
+      {
+        workspaceId:
+          asString(requestBody.context?.workspaceId) ??
+          asString(req.headers["x-workspace-id"]),
+        sessionId:
+          asString(requestBody.context?.sessionId) ??
+          asString(requestBody.sessionId),
+        taskType:
+          asString(requestBody.context?.taskType) ??
+          asString(req.headers["x-task-type"]),
+        featureFlags: Array.isArray(requestBody.context?.featureFlags)
+          ? requestBody.context?.featureFlags.filter(
+              (flag): flag is string => typeof flag === "string",
+            )
+          : [],
+        authScopes: Array.isArray(requestBody.context?.authScopes)
+          ? requestBody.context?.authScopes.filter(
+              (scope): scope is string => typeof scope === "string",
+            )
+          : [],
+        attachedCapabilityIds: Array.isArray(requestBody.context?.attachedCapabilityIds)
+          ? requestBody.context?.attachedCapabilityIds.filter(
+              (capabilityId): capabilityId is string =>
+                typeof capabilityId === "string",
+            )
+          : [],
+        metadata:
+          typeof requestBody.context?.metadata === "object" &&
+          requestBody.context?.metadata !== null
+            ? (requestBody.context.metadata as Record<string, unknown>)
+            : undefined,
+      },
+      userId,
     );
+
+    const upstreamResponse = await createAgentChatResponse({
+      messages: maybeMessages as UIMessage[],
+      context,
+    });
 
     res.statusCode = upstreamResponse.status;
     upstreamResponse.headers.forEach((value, key) => {
