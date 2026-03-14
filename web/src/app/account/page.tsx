@@ -14,6 +14,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { FeedbackDialog } from "@/components/feedback-dialog";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { useUsage } from "@/hooks/use-usage";
@@ -85,6 +86,7 @@ export default function AccountPage() {
         <header className="flex h-12 shrink-0 items-center justify-between px-4">
           <SidebarTrigger />
           <div className="mt-4 mr-4 flex items-center gap-1.5">
+            <FeedbackDialog />
             <a
               href="https://discord.gg"
               target="_blank"

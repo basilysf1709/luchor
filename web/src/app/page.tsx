@@ -6,6 +6,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { AuthCard } from "@/components/auth-card";
 import { authClient } from "@/lib/auth-client";
 import { ChatPage } from "@/components/chat/chat-page";
+import { FeedbackDialog } from "@/components/feedback-dialog";
 import { FaDiscord, FaGithub } from "react-icons/fa";
 import {
   SidebarProvider,
@@ -71,6 +72,7 @@ export default function Home() {
         <header className="flex h-12 shrink-0 items-center justify-between px-4">
           <SidebarTrigger />
           <div className="flex items-center gap-1.5 mt-4 mr-4">
+            <FeedbackDialog />
             <a href="https://discord.gg" target="_blank" rel="noopener noreferrer" className="flex h-7 w-7 items-center justify-center text-black/50 hover:text-black">
               <FaDiscord size={18} />
             </a>
