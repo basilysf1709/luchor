@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="web/public/assets/logo.svg" width="200" alt="Luchor logo" />
+  <img src="web/public/assets/logo.svg" width="150" alt="Luchor logo" />
 </p>
 
 <h1 align="center">luchor</h1>
