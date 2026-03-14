@@ -1,6 +1,8 @@
 import { defineAgent } from "../define-agent.ts";
 import { createFrontendArtifact } from "../tools/create-frontend-artifact.ts";
 import { getDesignColors } from "../tools/get-design-colors.ts";
+import { startDeepResearch } from "../tools/start-deep-research.ts";
+import { checkResearchStatus } from "../tools/check-research-status.ts";
 
 export const orchestrator = defineAgent({
   name: "orchestrator",
@@ -40,7 +42,13 @@ Output expectations:
 - Do not generate clipped layouts. Avoid body-level \`overflow: hidden\`, avoid fixed heights that cut content off, and make sure the page remains usable at the iframe size.
 - Generated previews should feel complete at first render, with enough vertical content and spacing to avoid large empty regions caused by under-designed screens.
 - When useful, provide sections like palette, layout, component styling, and interaction guidance.
-- If the user asks for a redesign, explain what changes and why.`,
-  tools: [getDesignColors, createFrontendArtifact],
+- If the user asks for a redesign, explain what changes and why.
+
+Deep research workflow:
+1. When the user asks for in-depth research, analysis, or investigation on a topic, use \`start_deep_research\` to launch a background research agent.
+2. Tell the user research has started and share the task ID.
+3. Use \`check_research_status\` to poll for results. If still running, let the user know and check again when they ask.
+4. Once complete, present the research findings to the user in a clear, structured format.`,
+  tools: [getDesignColors, createFrontendArtifact, startDeepResearch, checkResearchStatus],
   maxSteps: 6,
 });

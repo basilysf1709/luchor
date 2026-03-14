@@ -3,6 +3,7 @@ import { createServer, type IncomingMessage } from "node:http";
 import { Readable } from "node:stream";
 import type { UIMessage } from "ai";
 import { createAgentChatResponse } from "./chat-runtime.ts";
+import { getTask, listTasks } from "./task-store.ts";
 
 const host = process.env.HOST ?? "0.0.0.0";
 const port = Number(process.env.PORT ?? "8787");
@@ -34,6 +35,40 @@ const server = createServer(async (req, res) => {
 
   if (req.method === "GET" && url.pathname === "/health") {
     return jsonResponse(200, { ok: true }, res);
+  }
+
+  // GET /api/tasks — list all tasks
+  if (req.method === "GET" && url.pathname === "/api/tasks") {
+    if (agentServiceApiKey) {
+      const authHeader = req.headers.authorization;
+      if (authHeader !== `Bearer ${agentServiceApiKey}`) {
+        return jsonResponse(401, { error: "Unauthorized" }, res);
+      }
+    }
+    const tasks = listTasks().map((t) => ({
+      id: t.id,
+      status: t.status,
+      query: t.query,
+      createdAt: t.createdAt,
+      completedAt: t.completedAt,
+    }));
+    return jsonResponse(200, { tasks }, res);
+  }
+
+  // GET /api/tasks/:id — get a specific task
+  const taskMatch = url.pathname.match(/^\/api\/tasks\/([^/]+)$/);
+  if (req.method === "GET" && taskMatch) {
+    if (agentServiceApiKey) {
+      const authHeader = req.headers.authorization;
+      if (authHeader !== `Bearer ${agentServiceApiKey}`) {
+        return jsonResponse(401, { error: "Unauthorized" }, res);
+      }
+    }
+    const task = getTask(taskMatch[1]);
+    if (!task) {
+      return jsonResponse(404, { error: "Task not found" }, res);
+    }
+    return jsonResponse(200, { task }, res);
   }
 
   if (req.method !== "POST" || url.pathname !== "/api/chat") {
