@@ -14,6 +14,7 @@ import {
 import { resolveTools } from "./runtime/resolve-tools.ts";
 import { resolveCapabilities } from "./capabilities/index.ts";
 import type { AgentContext, CapabilityDefinition } from "./types.ts";
+import { getComposioTools } from "./composio.ts";
 
 function getHandoffTarget(output: unknown): string | null {
   if (typeof output !== "object" || output === null) return null;
@@ -40,7 +41,11 @@ export async function createAgentChatResponse({
     additionalCapabilities,
   });
   const activeAgent = resolvedCapabilities.activeAgent;
-  const tools = resolveTools(activeAgent, resolvedCapabilities);
+  const dslTools = resolveTools(activeAgent, resolvedCapabilities);
+  const composioTools = await getComposioTools(
+    context.userId ?? "default-user",
+  );
+  const tools = { ...dslTools, ...composioTools };
   const systemPrompt = buildSystemPrompt(activeAgent);
 
   const stream = createUIMessageStream({
